@@ -16,16 +16,14 @@ public class Block : MonoBehaviour
     }
     void CheckInput() {
         Vector3 move = new Vector3();
+        // Change to Axes
         if(Input.GetKeyDown(KeyCode.A)) { move.x = -1;}
         else if (Input.GetKeyDown(KeyCode.D)) { move.x = 1; }
+        if (Input.GetKeyDown(KeyCode.S)) { move.y = -1; }
 
-        if(Input.GetKeyDown(KeyCode.W)) {
-            // snap to bottom
-        } else if (Input.GetKeyDown(KeyCode.S)) { move.y = -1; }
         transform.Translate(move,Space.World);
 
         if(Input.GetKeyDown(KeyCode.Space)) {
-            //transform.Rotate(transform.TransformPoint(rPoint),90,Space.Self);
             transform.Rotate(0, 0, 90);
         }
     }
