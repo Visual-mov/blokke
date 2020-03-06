@@ -4,30 +4,55 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
+    private FieldManager fm;
+    private bool Enable;
+
+    private void Awake() {
+        fm = GameObject.Find("Field").GetComponent<FieldManager>();
+        Enable = true;
+    }
 
     void Start()
     {
-        InvokeRepeating("MoveDown",1,1);
+        InvokeRepeating("Tick",1,1);
     }
 
     void Update()
     {
-        CheckInput();
+        if(Enable) CheckInput();
     }
+
     void CheckInput() {
-        Vector3 move = new Vector3();
+        Vector4 move = new Vector4();
         // Change to Axes
-        if(Input.GetKeyDown(KeyCode.A)) { move.x = -1;}
+        if (Input.GetKeyDown(KeyCode.A)) { move.x = -1; }
         else if (Input.GetKeyDown(KeyCode.D)) { move.x = 1; }
         if (Input.GetKeyDown(KeyCode.S)) { move.y = -1; }
 
-        transform.Translate(move,Space.World);
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            move.w = 90;
+        }
+        if (fm.ValidateMove(transform, move)) {
+            transform.Translate(move.x, move.y, move.z, Space.World);
+            transform.Rotate(new Vector3(0, 0, move.w));
 
-        if(Input.GetKeyDown(KeyCode.Space)) {
-            transform.Rotate(0, 0, 90);
         }
     }
-    void MoveDown() {
-       transform.Translate(0, -1, 0, Space.World);
+    
+    bool CheckBlock(Vector3 p) {
+        return false;
+    }
+
+    void Tick() {
+        // Refactor this vv
+        Vector4 move = new Vector4(0, -1, 0, 0);
+        if (fm.ValidateMove(transform, move)) {
+            transform.Translate(move.x, move.y, move.z, Space.World);
+        } else {
+            CancelInvoke("Tick");
+            Enable = false;
+            fm.AddToField(transform);
+            fm.SpawnPiece();
+        }
     }
 }
