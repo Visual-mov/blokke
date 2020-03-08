@@ -25,12 +25,12 @@ public class Block : MonoBehaviour
     void CheckInput() {
         Vector4 move = new Vector4();
         // Change to Axes
-        if (Input.GetKeyDown(KeyCode.A)) { move.x = -1; }
-        else if (Input.GetKeyDown(KeyCode.D)) { move.x = 1; }
-        if (Input.GetKeyDown(KeyCode.S)) { move.y = -1; }
+        if (Input.GetKeyDown(KeyCode.A)) { move.x = -1.0f; }
+        else if (Input.GetKeyDown(KeyCode.D)) { move.x = 1.0f; }
+        if (Input.GetKeyDown(KeyCode.S)) { move.y = -1.0f; }
 
         if (Input.GetKeyDown(KeyCode.Space)) {
-            move.w = 90;
+            move.w = 90.0f;
         }
         if (fm.ValidateMove(transform, move)) {
             transform.Translate(move.x, move.y, move.z, Space.World);
@@ -45,7 +45,7 @@ public class Block : MonoBehaviour
 
     void Tick() {
         // Refactor this vv
-        Vector4 move = new Vector4(0, -1, 0, 0);
+        Vector4 move = new Vector4(0, -1.0f, 0, 0);
         if (fm.ValidateMove(transform, move)) {
             transform.Translate(move.x, move.y, move.z, Space.World);
         } else {
