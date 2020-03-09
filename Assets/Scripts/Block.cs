@@ -19,35 +19,31 @@ public class Block : MonoBehaviour
 
     void Update()
     {
-        if(Enable) CheckInput();
+        if(Enable)
+            CheckInput();
+        if (transform.childCount == 0)
+            Destroy(transform.gameObject);
     }
 
     void CheckInput() {
         Vector4 move = new Vector4();
         // Change to Axes
-        if (Input.GetKeyDown(KeyCode.A)) { move.x = -1.0f; }
-        else if (Input.GetKeyDown(KeyCode.D)) { move.x = 1.0f; }
-        if (Input.GetKeyDown(KeyCode.S)) { move.y = -1.0f; }
+        if (Input.GetKeyDown(KeyCode.A)) move.x = -1.0f;
+        else if (Input.GetKeyDown(KeyCode.D)) move.x = 1.0f;
+        if (Input.GetKeyDown(KeyCode.S)) move.y = -1.0f;
+        if (Input.GetKeyDown(KeyCode.Space)) move.w = 90.0f;
 
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            move.w = 90.0f;
-        }
         if (fm.ValidateMove(transform, move)) {
             transform.Translate(move.x, move.y, move.z, Space.World);
             transform.Rotate(new Vector3(0, 0, move.w));
 
         }
     }
-    
-    bool CheckBlock(Vector3 p) {
-        return false;
-    }
 
     void Tick() {
-        // Refactor this vv
-        Vector4 move = new Vector4(0, -1.0f, 0, 0);
+        Vector3 move = Vector3.down;
         if (fm.ValidateMove(transform, move)) {
-            transform.Translate(move.x, move.y, move.z, Space.World);
+            transform.Translate(move, Space.World);
         } else {
             CancelInvoke("Tick");
             Enable = false;

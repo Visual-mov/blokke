@@ -214,14 +214,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33d453469de04ff498bb78c3f748a3da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Blocks:
-  - {fileID: 1863996233466946177, guid: 40cecf8b306f75d43aad62d6e5c5518b, type: 3}
-  - {fileID: 3047572771736965737, guid: 9effd82ddfbf3eb4d8e32da9b77302e0, type: 3}
-  - {fileID: 817434774839690218, guid: b0091c2e152005e408d80b9f3c5c60e3, type: 3}
-  - {fileID: 6735152256595947156, guid: e03678074df70d64098e6e8f5bb6448a, type: 3}
-  - {fileID: 8673296737501238191, guid: 6483d47d655f7614991f541a0a9f43cc, type: 3}
-  - {fileID: 4754614447547241741, guid: ecd74657adece154e83950d77f843300, type: 3}
-  - {fileID: 4487937348072282449, guid: 47328e79f654ada42887c5791e43d56d, type: 3}
 --- !u!61 &55437520
 BoxCollider2D:
   m_ObjectHideFlags: 0
