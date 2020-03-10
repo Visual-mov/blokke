@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Block : MonoBehaviour
-{
+public class Block : MonoBehaviour {
     private FieldManager fm;
     private bool Enable;
 
@@ -12,13 +11,15 @@ public class Block : MonoBehaviour
         Enable = true;
     }
 
-    void Start()
-    {
+    void Start() {
+        if(!fm.ValidateMove(transform,Vector3.zero)) {
+            Destroy(transform.gameObject);
+            fm.GameOver = true;
+        }
         InvokeRepeating("Tick",1,1);
     }
 
-    void Update()
-    {
+    void Update() {
         if(Enable)
             CheckInput();
         if (transform.childCount == 0)

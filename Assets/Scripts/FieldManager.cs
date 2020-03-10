@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FieldManager : MonoBehaviour
-{
+public class FieldManager : MonoBehaviour {
 
     const int fWidth = 10;
     const int fHeight = 20;
+    public bool GameOver;
     private GameObject[] Blocks;
     private GameObject[,] Field;
 
     private void Awake() {
         Field = new GameObject[fWidth, fHeight];
+        GameOver = false;
         string[] names = {
             "I-Block", "J-Block",
             "L-Block", "O-Block",
@@ -48,12 +49,12 @@ public class FieldManager : MonoBehaviour
     public void UpdateLines() {
         // bad code no look!! >:(
         for(int y = 0; y < fHeight; y++) {
-            if(RowFilled(y)) {
+            while(RowFilled(y)) {
                 RemoveRow(y);
-                GameObject[] TempRow = new GameObject[fWidth];
                 for(int i = y; i < fHeight; i++) {
+                    print(i);
                     for (int j = 0; j < fWidth; j++) {
-                        if (i + 1 > fHeight - 1) {
+                        if (i + 1 >= fHeight) {
                             Destroy(Field[j, i]);
                             Field[j, i] = null;
                         } else {
