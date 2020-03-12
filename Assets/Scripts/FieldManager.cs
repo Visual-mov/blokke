@@ -33,15 +33,14 @@ public class FieldManager : MonoBehaviour {
     public bool ValidateMove(Transform block, Vector4 move) {
         for (int i = 0; i < block.childCount; i++) {
             Vector3 pos = block.GetChild(i).position;
-            Vector3 rotatedPos = CalcRotation(pos, block, move.w);
             if (CheckConstraints(pos + (Vector3) move))
                 return false;
-            else if (CheckConstraints(rotatedPos))
+            else if (CheckConstraints(CalcRotation(pos, block, move.w)))
                 return false;
             for(int y = 0; y < fHeight; y++) {
                 for(int x = 0; x < fWidth; x++) {
-                    Vector3 FPos = Field[x, y].transform.position;
-                    if (Field[x, y] != null && (FPos == pos + (Vector3) move || FPos == rotatedPos))
+                    Vector3 FPos = (Field[x, y] != null) ? Field[x, y].transform.position : Vector3.zero;
+                    if (FPos == pos + (Vector3) move || FPos == CalcRotation(pos, block, move.w))
                         return false;
                 }
             }
@@ -54,13 +53,13 @@ public class FieldManager : MonoBehaviour {
             while(RowFilled(y)) {
                 RemoveRow(y);
                 for(int i = y; i < fHeight; i++) {
-                    print(i);
                     for (int j = 0; j < fWidth; j++) {
+                        GameObject block = Field[j, i];
                         if (i + 1 >= fHeight) {
-                            Destroy(Field[j, i]);
+                            Destroy(block);
                             Field[j, i] = null;
                         } else {
-                            if(Field[j, i] != null) Field[j, i].transform.Translate(Vector3.down,Space.World);
+                            if(block != null) block.transform.Translate(Vector3.down,Space.World);
                             Field[j, i] = Field[j, i + 1];
                         }
                     }
