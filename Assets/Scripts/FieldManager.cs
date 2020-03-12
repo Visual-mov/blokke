@@ -6,13 +6,14 @@ public class FieldManager : MonoBehaviour {
 
     const int fWidth = 10;
     const int fHeight = 20;
-    public bool GameOver;
     private GameObject[] Blocks;
     private GameObject[,] Field;
+    private float LSide, RSide;
 
-    private void Awake() {
+    void Awake() {
         Field = new GameObject[fWidth, fHeight];
-        GameOver = false;
+        LSide = transform.position.x - fWidth / 2;
+        RSide = transform.position.x + fWidth / 2;
         string[] names = {
             "I-Block", "J-Block",
             "L-Block", "O-Block",
@@ -47,7 +48,6 @@ public class FieldManager : MonoBehaviour {
     }
 
     public void UpdateLines() {
-        // bad code no look!! >:(
         for(int y = 0; y < fHeight; y++) {
             while(RowFilled(y)) {
                 RemoveRow(y);
@@ -67,6 +67,19 @@ public class FieldManager : MonoBehaviour {
         }
     }
 
+    public void AddToField(Transform t) {
+        for (int i = 0; i < t.childCount; i++) {
+            Vector3 childPos = t.GetChild(i).transform.position;
+            Field[Mathf.CeilToInt(childPos.x - LSide) - 1, Mathf.CeilToInt(childPos.y) - 1] = t.GetChild(i).gameObject;
+        }
+        UpdateLines();
+    }
+    
+    public void SpawnPiece() {
+        GameObject block = Blocks[Random.Range(0, 6)];
+        Instantiate(block, block.transform.position + new Vector3(LSide, 0, 0), new Quaternion());
+    }
+
     private bool RowFilled(int row) {
         for (int x = 0; x < fWidth; x++) {
             if (Field[x, row] == null) return false;
@@ -82,7 +95,7 @@ public class FieldManager : MonoBehaviour {
     }
 
     private bool CheckConstraints(Vector3 pos) {
-        return (pos.x >= fWidth || pos.x < 0 || pos.y <= 0) ? true : false;
+        return (pos.x >= RSide || pos.x <= LSide || pos.y <= 0) ? true : false;
     }
 
     private Vector3 CalcRotation(Vector2 pos, Transform block, float degree) {
@@ -91,18 +104,5 @@ public class FieldManager : MonoBehaviour {
         float xp = -pos.y * Mathf.Sin(a) + pos.x * Mathf.Cos(a);
         float xy = pos.y * Mathf.Cos(a) - pos.x * Mathf.Sin(a);
         return block.TransformPoint(new Vector3(xp,xy,0));
-    }
-
-    public void SpawnPiece() {
-        Instantiate(Blocks[Random.Range(0, 6)]);
-    }
-
-    public void AddToField(Transform t) {
-        for (int i = 0; i < t.childCount; i++) {
-            Vector3 childPos = t.GetChild(i).transform.position;
-            Field[Mathf.CeilToInt(childPos.x)-1, Mathf.CeilToInt(childPos.y)-1] = t.GetChild(i).gameObject;
-        }
-        
-        UpdateLines();
     }
 }

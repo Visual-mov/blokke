@@ -6,7 +6,7 @@ public class Block : MonoBehaviour {
     private FieldManager fm;
     private bool Enable;
 
-    private void Awake() {
+    void Awake() {
         fm = GameObject.Find("Field").GetComponent<FieldManager>();
         Enable = true;
     }
@@ -14,7 +14,6 @@ public class Block : MonoBehaviour {
     void Start() {
         if(!fm.ValidateMove(transform,Vector3.zero)) {
             Destroy(transform.gameObject);
-            fm.GameOver = true;
         }
         InvokeRepeating("Tick",1,1);
     }
@@ -26,7 +25,7 @@ public class Block : MonoBehaviour {
             Destroy(transform.gameObject);
     }
 
-    void CheckInput() {
+    private void CheckInput() {
         Vector4 move = new Vector4();
         // Change to Axes
         if (Input.GetKeyDown(KeyCode.A)) move.x = -1.0f;
@@ -41,7 +40,7 @@ public class Block : MonoBehaviour {
         }
     }
 
-    void Tick() {
+    private void Tick() {
         Vector3 move = Vector3.down;
         if (fm.ValidateMove(transform, move)) {
             transform.Translate(move, Space.World);
@@ -51,5 +50,10 @@ public class Block : MonoBehaviour {
             fm.AddToField(transform);
             fm.SpawnPiece();
         }
+    }
+
+    public void ChangeSpeed(float t) {
+        CancelInvoke("Tick");
+        InvokeRepeating("Tick",t,t);
     }
 }
