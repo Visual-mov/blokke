@@ -33,13 +33,15 @@ public class FieldManager : MonoBehaviour {
     public bool ValidateMove(Transform block, Vector4 move) {
         for (int i = 0; i < block.childCount; i++) {
             Vector3 pos = block.GetChild(i).position;
+            Vector3 rotatedPos = CalcRotation(pos, block, move.w);
             if (CheckConstraints(pos + (Vector3) move))
                 return false;
-            else if (CheckConstraints(CalcRotation(pos, block, move.w)))
+            else if (CheckConstraints(rotatedPos))
                 return false;
             for(int y = 0; y < fHeight; y++) {
                 for(int x = 0; x < fWidth; x++) {
-                    if (Field[x, y] != null && Field[x,y].transform.position == pos + (Vector3) move)
+                    Vector3 FPos = Field[x, y].transform.position;
+                    if (Field[x, y] != null && (FPos == pos + (Vector3) move || FPos == rotatedPos))
                         return false;
                 }
             }
