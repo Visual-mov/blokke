@@ -33,14 +33,13 @@ public class FieldManager : MonoBehaviour {
     public bool ValidateMove(Transform block, Vector4 move) {
         for (int i = 0; i < block.childCount; i++) {
             Vector3 pos = block.GetChild(i).position;
-            if (CheckConstraints(pos + (Vector3) move))
+            if (CheckConstraints(pos + (Vector3)move) || CheckConstraints(CalcRotation(pos, block, move.w)))
                 return false;
-            else if (CheckConstraints(CalcRotation(pos, block, move.w)))
-                return false;
-            for(int y = 0; y < fHeight; y++) {
-                for(int x = 0; x < fWidth; x++) {
-                    Vector3 FPos = (Field[x, y] != null) ? Field[x, y].transform.position : Vector3.zero;
-                    if (FPos == pos + (Vector3) move || FPos == CalcRotation(pos, block, move.w))
+            for (int y = 0; y < fHeight; y++) {
+                for (int x = 0; x < fWidth; x++) {
+                    if (Field[x, y] == null) continue;
+                    Transform FBlock = Field[x, y].transform;
+                    if (FBlock.position == pos + (Vector3)move || FBlock.position == CalcRotation(pos, block, move.w))
                         return false;
                 }
             }
@@ -102,8 +101,12 @@ public class FieldManager : MonoBehaviour {
     private Vector3 CalcRotation(Vector2 pos, Transform block, float degree) {
         pos = block.InverseTransformPoint(pos);
         float a = degree * Mathf.PI / 180;
-        float xp = -pos.y * Mathf.Sin(a) + pos.x * Mathf.Cos(a);
-        float xy = pos.y * Mathf.Cos(a) - pos.x * Mathf.Sin(a);
-        return block.TransformPoint(new Vector3(xp,xy,0));
+        float xp = pos.x * Mathf.Cos(a) - pos.y * Mathf.Sin(a);
+        float yp = pos.x * Mathf.Sin(a) + pos.y * Mathf.Cos(a);
+        return block.TransformPoint(new Vector3(xp, yp, 0));
+    }
+
+    private bool CompV3(Vector3 a, Vector3 b) {
+        return Vector3.SqrMagnitude(a - b) < 0.0001f;
     }
 }
