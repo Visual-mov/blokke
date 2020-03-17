@@ -39,7 +39,7 @@ public class FieldManager : MonoBehaviour {
                 for (int x = 0; x < fWidth; x++) {
                     if (Field[x, y] == null) continue;
                     Transform FBlock = Field[x, y].transform;
-                    if (FBlock.position == pos + (Vector3)move || FBlock.position == CalcRotation(pos, block, move.w))
+                    if (CompV3(FBlock.position, pos + (Vector3)move) || CompV3(FBlock.position, CalcRotation(pos, block, move.w)))
                         return false;
                 }
             }
@@ -88,7 +88,7 @@ public class FieldManager : MonoBehaviour {
     }
 
     private void RemoveRow(int y) {
-        for (int x = 0; x < fWidth; x++) {
+        for (int x = 0; x < fWidth; x++) { 
             Destroy(Field[x, y]);
             Field[x, y] = null;
         }
