@@ -10,7 +10,10 @@ public class FieldManager : MonoBehaviour {
     private GameObject[,] Field;
     private float LSide, RSide;
 
+    private SideDisplay display;
+
     void Awake() {
+        display = GameObject.Find("SideDisplay").GetComponent<SideDisplay>();
         Field = new GameObject[fWidth, fHeight];
         LSide = transform.position.x - fWidth / 2;
         RSide = transform.position.x + fWidth / 2;
@@ -22,7 +25,7 @@ public class FieldManager : MonoBehaviour {
         };
         Blocks = new GameObject[names.Length];
         for (int i = 0; i < names.Length; i++) {
-            Blocks[i] = (GameObject) Resources.Load("Prefabs/" + names[i]);
+            Blocks[i] = (GameObject )Resources.Load("Prefabs/" + names[i]);
         }
     }
 
@@ -76,8 +79,12 @@ public class FieldManager : MonoBehaviour {
     }
     
     public void SpawnPiece() {
-        GameObject block = Blocks[Random.Range(0, 6)];
+        GameObject block = RandomBlock();
         Instantiate(block, block.transform.position + new Vector3(LSide, 0, 0), new Quaternion());
+    }
+
+    public GameObject RandomBlock() {
+        return Blocks[Random.Range(0, 6)];
     }
 
     private bool RowFilled(int row) {
