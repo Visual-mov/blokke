@@ -4,22 +4,22 @@ using UnityEngine;
 
 public class Block : MonoBehaviour {
     private FieldManager fm;
-    private bool Enable;
+    public bool active;
 
     void Awake() {
         fm = GameObject.Find("Field").GetComponent<FieldManager>();
-        Enable = true;
+        active = true;  
     }
 
     void Start() {
         if(!fm.ValidateMove(transform,Vector3.zero)) {
             Destroy(transform.gameObject);
         }
-        InvokeRepeating("Tick",1,1);
+        InvokeRepeating("Tick", 1, 1);
     }
 
     void Update() {
-        if(Enable)
+        if(active)
             CheckInput();
         if (transform.childCount == 0)
             Destroy(transform.gameObject);
@@ -32,6 +32,10 @@ public class Block : MonoBehaviour {
         else if (Input.GetKeyDown(KeyCode.D)) move.x = 1.0f;
         if (Input.GetKeyDown(KeyCode.S)) move.y = -1.0f;
         if (Input.GetKeyDown(KeyCode.Space)) move.w = 90.0f;
+
+        if (Input.GetKeyDown(KeyCode.Q)) {
+            fm.HoldBlock(transform.gameObject);
+        }
 
         if (fm.ValidateMove(transform, move)) {
             transform.Translate(move.x, move.y, move.z, Space.World);
@@ -46,14 +50,14 @@ public class Block : MonoBehaviour {
             transform.Translate(move, Space.World);
         } else {
             CancelInvoke("Tick");
-            Enable = false;
+            active = false;
             fm.AddToField(transform);
-            fm.SpawnPiece();
+            fm.SpawnNextBlock();
         }
     }
 
-    public void ChangeSpeed(float t) {
+    public void Disable() {
+        active = false;
         CancelInvoke("Tick");
-        InvokeRepeating("Tick",t,t);
     }
 }
