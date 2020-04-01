@@ -12,7 +12,7 @@ public class FieldManager : MonoBehaviour {
     private GameObject[,] Field;
     private float LSide, RSide;
 
-    private SideDisplay display;
+    public SideDisplay display;
 
     void Awake() {
         LSide = transform.position.x - FWidth / 2;
@@ -40,7 +40,7 @@ public class FieldManager : MonoBehaviour {
         SpawnNextBlock();
     }
 
-    // ValidateMove(): Checks if a given move hits constraints, or other blocks.
+    // ValidateMove(): Checks if a given move hits constraints or other blocks, and if so returns false.
     public bool ValidateMove(Transform block, Vector4 move) {
         for (int i = 0; i < block.childCount; i++) {
             Vector3 pos = block.GetChild(i).position;
@@ -50,7 +50,7 @@ public class FieldManager : MonoBehaviour {
                 for (int x = 0; x < FWidth; x++) {
                     if (Field[x, y] == null) continue;
                     Transform FBlock = Field[x, y].transform;
-                    if (CompV3(FBlock.position, pos + (Vector3)move) || CompV3(FBlock.position, CalcRotation(pos, block, move.w)))
+                    if (FBlock.position == pos + (Vector3)move || FBlock.position == CalcRotation(pos, block, move.w))
                         return false;
                 }
             }
@@ -79,19 +79,17 @@ public class FieldManager : MonoBehaviour {
         }
     }
 
-    public void HoldBlock(GameObject block) {
-        display.HoldBlock(block);
-    }
-    
-    // AddToField(): Adds 
+    // AddToField(): Adds block to field array using rounded position as index, as sprite pivot is center.
     public void AddToField(Transform t) {
         for (int i = 0; i < t.childCount; i++) {
             Vector3 childPos = t.GetChild(i).transform.position;
-            Field[Mathf.CeilToInt(childPos.x - LSide) - 1, Mathf.CeilToInt(childPos.y) - 1] = t.GetChild(i).gameObject;
+            print(childPos.x - LSide);
+            Field[Mathf.FloorToInt(childPos.x - LSide), Mathf.FloorToInt(childPos.y)] = t.GetChild(i).gameObject;
         }
         UpdateLines();
     }
 
+    // SpawnNextBlock(): Instantiates next block, and adds a random block to the end of the queue.
     public void SpawnNextBlock() {
         GameObject block = BlockQueue.Dequeue();
         SpawnBlock(block);
@@ -99,6 +97,7 @@ public class FieldManager : MonoBehaviour {
         display.UpdatePreview();
     }
 
+    // SpawnBlock(): Instantiates given block with respect to field position.
     public void SpawnBlock(GameObject block) {
         Instantiate(block, block.transform.position + new Vector3(LSide, 0, 0), Quaternion.identity);
     }
@@ -107,6 +106,9 @@ public class FieldManager : MonoBehaviour {
         return Blocks[Random.Range(0, 6)];
     }
 
+    /* Helper Functions */
+
+    // RowFilled(): Returns true if given row is full.
     private bool RowFilled(int row) {
         for (int x = 0; x < FWidth; x++) {
             if (Field[x, row] == null) return false;
@@ -114,26 +116,25 @@ public class FieldManager : MonoBehaviour {
         return true;
     }
 
-    private void RemoveRow(int y) {
+    // RemoveRow(): Removes given row from field array.
+    private void RemoveRow(int row) {
         for (int x = 0; x < FWidth; x++) { 
-            Destroy(Field[x, y]);
-            Field[x, y] = null;
+            Destroy(Field[x, row]);
+            Field[x, row] = null;
         }
     }
 
+    // CheckConstraints(): Returns true if pos is within the field.
     private bool CheckConstraints(Vector3 pos) {
         return (pos.x >= RSide || pos.x <= LSide || pos.y <= 0) ? true : false;
     }
 
+    // CalcRotation(): Calculates rotated vector with a counter-clockwise rotation of degree degrees
     private Vector3 CalcRotation(Vector2 pos, Transform block, float degree) {
         pos = block.InverseTransformPoint(pos);
         float a = degree * Mathf.PI / 180;
         float xp = pos.x * Mathf.Cos(a) - pos.y * Mathf.Sin(a);
         float yp = pos.x * Mathf.Sin(a) + pos.y * Mathf.Cos(a);
         return block.TransformPoint(new Vector3(xp, yp, 0));
-    }
-
-    private bool CompV3(Vector3 a, Vector3 b) {
-        return Vector3.SqrMagnitude(a - b) < 0.0001f;
     }
 }

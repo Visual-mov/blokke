@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Block : MonoBehaviour {
+
     private FieldManager fm;
     public bool active;
 
@@ -25,6 +26,7 @@ public class Block : MonoBehaviour {
             Destroy(transform.gameObject);
     }
 
+    // CheckInput(): Listens for user input, and executes according action.
     private void CheckInput() {
         Vector4 move = new Vector4();
         // Change to Axes
@@ -34,7 +36,7 @@ public class Block : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Space)) move.w = 90.0f;
 
         if (Input.GetKeyDown(KeyCode.Q)) {
-            fm.HoldBlock(transform.gameObject);
+            fm.display.HoldBlock(transform.gameObject);
         }
 
         if (fm.ValidateMove(transform, move)) {
@@ -44,18 +46,19 @@ public class Block : MonoBehaviour {
         }
     }
 
+    // Tick(): Checks if block is at the bottom of the field and disables it if so, otherwise moves the block down.
     private void Tick() {
         Vector3 move = Vector3.down;
         if (fm.ValidateMove(transform, move)) {
             transform.Translate(move, Space.World);
         } else {
-            CancelInvoke("Tick");
-            active = false;
+            Disable();
             fm.AddToField(transform);
             fm.SpawnNextBlock();
         }
     }
 
+    // Disable(): Disables checking of user input and tick execution.
     public void Disable() {
         active = false;
         CancelInvoke("Tick");

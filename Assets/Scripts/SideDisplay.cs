@@ -22,7 +22,7 @@ public class SideDisplay : MonoBehaviour
     public void UpdatePreview() {
         GameObject[] blocks = fm.BlockQueue.ToArray();
         for (int i = 0; i < blocks.Length; i++) {
-            //preview[i] = Instantiate((GameObject)Resources.Load("Prefabs/" + blocks[i].name.Replace("(Clone)", "")), new Vector3(HoldPos.x, 17.3f - (i * 2.3f), 0), new Quaternion());
+            //Instantiate((GameObject)Resources.Load("Prefabs/" + blocks[i].name.Replace("(Clone)", "")), new Vector3(HoldPos.x, 17.3f - (i * 2.3f), 0), new Quaternion());
         }
     }
 
@@ -33,7 +33,6 @@ public class SideDisplay : MonoBehaviour
             fm.SpawnNextBlock();
             holding = true;
         } else {
-            // sus
             fm.SpawnBlock((GameObject)Resources.Load("Prefabs/" + heldBlock.name.Replace("(Clone)", "")));
             Destroy(heldBlock);
             MoveBlock(block);
@@ -42,10 +41,18 @@ public class SideDisplay : MonoBehaviour
         
     }
 
-    void MoveBlock(GameObject g) {
+    private void MoveBlock(GameObject g) {
         g.transform.position = HoldPos;
         g.transform.rotation = new Quaternion();
         g.transform.localScale = new Vector3(0.8f,0.8f,0);
         g.GetComponent<Block>().Disable();
+    }
+
+    private Vector3 ReturnCenter(GameObject block) {
+        Vector3 center = Vector3.zero;
+        for(int i = 0; i < block.transform.childCount; i++) {
+            center += block.transform.GetChild(i).transform.position;
+        }
+        return center / block.transform.childCount;
     }
 }
