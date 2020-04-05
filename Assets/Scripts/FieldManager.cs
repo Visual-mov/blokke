@@ -6,7 +6,7 @@ public class FieldManager : MonoBehaviour {
 
     const int FWidth = 10;
     const int FHeight = 20;
-    const int QueueLength = 3;
+    public int QueueLength = 3;
     public GameObject[] Blocks;
     public Queue<GameObject> BlockQueue;
     private GameObject[,] Field;
@@ -83,7 +83,6 @@ public class FieldManager : MonoBehaviour {
     public void AddToField(Transform t) {
         for (int i = 0; i < t.childCount; i++) {
             Vector3 childPos = t.GetChild(i).transform.position;
-            print(childPos.x - LSide);
             Field[Mathf.FloorToInt(childPos.x - LSide), Mathf.FloorToInt(childPos.y)] = t.GetChild(i).gameObject;
         }
         UpdateLines();

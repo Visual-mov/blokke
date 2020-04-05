@@ -5,46 +5,50 @@ using UnityEngine;
 public class SideDisplay : MonoBehaviour
 {
     private FieldManager fm;
-    public Vector3 PreviewPos, HoldPos;
+    private Transform preview, hold;
     private GameObject heldBlock;
+    private GameObject[] preQueue;
     private bool holding;
 
     private void Awake() {
         fm = GameObject.Find("Field").GetComponent<FieldManager>();
-        PreviewPos = transform.Find("Preview").position;
-        HoldPos = transform.Find("Hold").position;
+        preview = transform.Find("Preview");
+        hold = transform.Find("Hold");
         holding = false;
-    }
-
-    void Update() {
+        preQueue = new GameObject[fm.QueueLength];
     }
 
     public void UpdatePreview() {
         GameObject[] blocks = fm.BlockQueue.ToArray();
+        float pHeight = preview.TransformVector(preview.GetComponent<BoxCollider2D>().size).y;
         for (int i = 0; i < blocks.Length; i++) {
-            //Instantiate((GameObject)Resources.Load("Prefabs/" + blocks[i].name.Replace("(Clone)", "")), new Vector3(HoldPos.x, 17.3f - (i * 2.3f), 0), new Quaternion());
+            Destroy(preQueue[i]);
+            preQueue[i] = Instantiate(blocks[i]);
+            Vector3 pos = new Vector3(preview.position.x, (preview.position.y + (pHeight / 2) - 2) - (i * (pHeight / preQueue.Length)), 0);
+            MoveBlock(preQueue[i], pos, preview);
         }
     }
 
     public void HoldBlock(GameObject block) {
         if (!holding) {
-            MoveBlock(block);
+            MoveBlock(block, hold.position, hold);
             heldBlock = block;
             fm.SpawnNextBlock();
             holding = true;
         } else {
-            fm.SpawnBlock((GameObject)Resources.Load("Prefabs/" + heldBlock.name.Replace("(Clone)", "")));
+            fm.SpawnBlock(Resources.Load("Prefabs/" + heldBlock.name.Replace("(Clone)", "")) as GameObject);
             Destroy(heldBlock);
-            MoveBlock(block);
+            MoveBlock(block, hold.position, hold);
             heldBlock = block;
         }
         
     }
 
-    private void MoveBlock(GameObject g) {
-        g.transform.position = HoldPos;
-        g.transform.rotation = new Quaternion();
+    private void MoveBlock(GameObject g, Vector3 pos, Transform t) {
+        g.transform.position = pos;
+        g.transform.rotation = Quaternion.identity;
         g.transform.localScale = new Vector3(0.8f,0.8f,0);
+        g.transform.parent = t;
         g.GetComponent<Block>().Disable();
     }
 

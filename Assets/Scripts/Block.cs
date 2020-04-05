@@ -9,14 +9,14 @@ public class Block : MonoBehaviour {
 
     void Awake() {
         fm = GameObject.Find("Field").GetComponent<FieldManager>();
-        active = true;  
+        active = true;
+        InvokeRepeating("Tick", 1, 1);
     }
 
     void Start() {
-        if(!fm.ValidateMove(transform,Vector3.zero)) {
+        if(!fm.ValidateMove(transform,Vector3.zero) && active) {
             Destroy(transform.gameObject);
         }
-        InvokeRepeating("Tick", 1, 1);
     }
 
     void Update() {
