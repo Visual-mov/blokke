@@ -24,7 +24,7 @@ public class SideDisplay : MonoBehaviour
         for (int i = 0; i < blocks.Length; i++) {
             Destroy(preQueue[i]);
             preQueue[i] = Instantiate(blocks[i]);
-            Vector3 pos = new Vector3(preview.position.x, (preview.position.y + (pHeight / 2) - 2) - (i * (pHeight / preQueue.Length)), 0);
+            Vector3 pos = new Vector3(preview.position.x, (preview.position.y + (pHeight / 2) - 1.5f) - (i * (pHeight / preQueue.Length)), 0);
             MoveBlock(preQueue[i], pos, preview);
         }
     }
@@ -45,18 +45,19 @@ public class SideDisplay : MonoBehaviour
     }
 
     private void MoveBlock(GameObject g, Vector3 pos, Transform t) {
-        g.transform.position = pos;
         g.transform.rotation = Quaternion.identity;
-        g.transform.localScale = new Vector3(0.8f,0.8f,0);
+        g.transform.localScale = new Vector3(0.6f,0.6f,0);
+        //print(pos - ReturnCenter(g.transform).normalized);
+        g.transform.position = pos;
         g.transform.parent = t;
         g.GetComponent<Block>().Disable();
     }
 
-    private Vector3 ReturnCenter(GameObject block) {
+    private Vector3 ReturnCenter(Transform block) {
         Vector3 center = Vector3.zero;
-        for(int i = 0; i < block.transform.childCount; i++) {
-            center += block.transform.GetChild(i).transform.position;
+        for(int i = 0; i < block.childCount; i++) {
+            center += block.GetChild(i).transform.position;
         }
-        return center / block.transform.childCount;
+        return center / block.childCount;
     }
 }

@@ -6,11 +6,13 @@ public class Block : MonoBehaviour {
 
     private FieldManager fm;
     public bool active;
+    private Vector2 lastInput;
 
     void Awake() {
         fm = GameObject.Find("Field").GetComponent<FieldManager>();
         active = true;
-        InvokeRepeating("Tick", 1, 1);
+        InvokeRepeating("Tick", 0.8f, 0.8f);
+        lastInput = Vector2.zero;
     }
 
     void Start() {
@@ -29,14 +31,21 @@ public class Block : MonoBehaviour {
     // CheckInput(): Listens for user input, and executes according action.
     private void CheckInput() {
         Vector4 move = new Vector4();
-        // Change to Axes
-        if (Input.GetKeyDown(KeyCode.A)) move.x = -1.0f;
-        else if (Input.GetKeyDown(KeyCode.D)) move.x = 1.0f;
-        if (Input.GetKeyDown(KeyCode.S)) move.y = -1.0f;
-        if (Input.GetKeyDown(KeyCode.Space)) move.w = 90.0f;
+        Vector2 input = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
-        if (Input.GetKeyDown(KeyCode.Q)) {
+        if (Input.GetKeyDown(KeyCode.A)) move.x = -1.0f;
+        if (Input.GetKeyDown(KeyCode.D)) move.x = 1.0f;
+        if (Input.GetKeyDown(KeyCode.S)) move.y = -1.0f;
+        if (Input.GetButtonDown("Rotate")) move.w = 90.0f;
+        if (Input.GetButtonDown("Hold")) {
             fm.display.HoldBlock(transform.gameObject);
+        }
+
+        // Handling control pad
+        if (input.x != lastInput.x || input.y != lastInput.y) {
+            if (input.x == -1) move.x = -1.0f;
+            else if (input.x == 1) move.x = 1.0f;
+            if (input.y == 1) move.y = -1.0f;
         }
 
         if (fm.ValidateMove(transform, move)) {
@@ -44,6 +53,7 @@ public class Block : MonoBehaviour {
             transform.Rotate(new Vector3(0, 0, move.w));
 
         }
+        lastInput = input;
     }
 
     // Tick(): Checks if block is at the bottom of the field and disables it if so, otherwise moves the block down.
