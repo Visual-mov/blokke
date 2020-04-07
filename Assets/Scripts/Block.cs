@@ -37,9 +37,7 @@ public class Block : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.D)) move.x = 1.0f;
         if (Input.GetKeyDown(KeyCode.S)) move.y = -1.0f;
         if (Input.GetButtonDown("Rotate")) move.w = 90.0f;
-        if (Input.GetButtonDown("Hold")) {
-            fm.display.HoldBlock(transform.gameObject);
-        }
+        if (Input.GetButtonDown("Hold")) fm.display.HoldBlock(transform.gameObject);
 
         // Handling control pad
         if (input.x != lastInput.x || input.y != lastInput.y) {

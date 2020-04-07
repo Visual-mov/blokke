@@ -13,11 +13,13 @@ public class FieldManager : MonoBehaviour {
     private float LSide, RSide;
 
     public SideDisplay display;
+    private ScoreBoard board;
 
     void Awake() {
         LSide = transform.position.x - FWidth / 2;
         RSide = transform.position.x + FWidth / 2;
         display = GameObject.Find("SideDisplay").GetComponent<SideDisplay>();
+        board = GameObject.Find("Canvas").GetComponent<ScoreBoard>();
         Field = new GameObject[FWidth, FHeight];
         BlockQueue = new Queue<GameObject>();
 
@@ -62,6 +64,7 @@ public class FieldManager : MonoBehaviour {
     public void UpdateLines() {
         for(int y = 0; y < FHeight; y++) {
             while(RowFilled(y)) {
+                board.AddToScore(100);
                 RemoveRow(y);
                 for(int i = y; i < FHeight; i++) {
                     for (int j = 0; j < FWidth; j++) {
@@ -81,6 +84,7 @@ public class FieldManager : MonoBehaviour {
 
     // AddToField(): Adds block to field array using rounded position as index, as sprite pivot is center.
     public void AddToField(Transform t) {
+        board.AddToScore(10);
         for (int i = 0; i < t.childCount; i++) {
             Vector3 childPos = t.GetChild(i).transform.position;
             Field[Mathf.FloorToInt(childPos.x - LSide), Mathf.FloorToInt(childPos.y)] = t.GetChild(i).gameObject;

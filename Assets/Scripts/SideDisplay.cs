@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SideDisplay : MonoBehaviour
-{
+public class SideDisplay : MonoBehaviour {
     private FieldManager fm;
     private Transform preview, hold;
     private GameObject heldBlock;

@@ -1,13 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ScoreBoard : MonoBehaviour {
-    void Start() {
-         
+
+    FieldManager fm;
+    Text scoreText;
+    int score;
+
+    void Awake() {
+        fm = GameObject.Find("Field").GetComponent<FieldManager>();
+        scoreText = transform.Find("Score").GetComponent<Text>();
+        score = 0;
     }
 
-    void Update() {
-        
+    public void AddToScore(int n) {
+        score += n;
+        scoreText.text = "Score: " + score;
     }
 }
