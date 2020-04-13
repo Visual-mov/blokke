@@ -35,6 +35,17 @@ public class FieldManager : MonoBehaviour {
         }
     }
 
+    private void OnDrawGizmos() {
+        if (Application.isPlaying) {
+            for (int i = 0; i < FHeight; i++) {
+                for (int j = 0; j < FWidth; j++) {
+                    if (Field[j, i] != null)
+                        Gizmos.DrawSphere(Field[j, i].transform.position, 0.3f);
+                }
+            }
+        }
+    }
+
     void Start() {
         for (int i = 0; i < QueueLength; i++) {
             BlockQueue.Enqueue(RandomBlock());
@@ -87,8 +98,10 @@ public class FieldManager : MonoBehaviour {
         board.AddToScore(10);
         for (int i = 0; i < t.childCount; i++) {
             Vector3 childPos = t.GetChild(i).transform.position;
+            print(Mathf.FloorToInt(childPos.x - LSide) + " " + Mathf.FloorToInt(childPos.y));
             Field[Mathf.FloorToInt(childPos.x - LSide), Mathf.FloorToInt(childPos.y)] = t.GetChild(i).gameObject;
         }
+        PrintField();
         UpdateLines();
     }
 
@@ -139,5 +152,20 @@ public class FieldManager : MonoBehaviour {
         float xp = pos.x * Mathf.Cos(a) - pos.y * Mathf.Sin(a);
         float yp = pos.x * Mathf.Sin(a) + pos.y * Mathf.Cos(a);
         return block.TransformPoint(new Vector3(xp, yp, 0));
+    }
+    // PrintField(): Prints text representation of field array. This is temporary and for debugging purposes.
+    public void PrintField() {
+        string field = "";
+        for(int y = FHeight - 1; y >= 0; y--) {
+            for(int x = 0; x < FWidth; x++) {
+                if(Field[x,y] == null) {
+                    field += "- ";
+                } else {
+                    field += "X ";
+                }
+            }
+            field += "\n";
+        }
+        print(field);
     }
 }
