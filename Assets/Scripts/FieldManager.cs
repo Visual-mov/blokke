@@ -87,8 +87,7 @@ public class FieldManager : MonoBehaviour {
                     for (int j = 0; j < FWidth; j++) {
                         GameObject block = Field[j, i];
                         if (i + 1 >= FHeight) {
-                            Destroy(block);
-                            Field[j, i] = null;
+                            RemoveRow(i);
                         } else {
                             if(block != null) block.transform.Translate(Vector3.down,Space.World);
                             Field[j, i] = Field[j, i + 1];
