@@ -102,7 +102,8 @@ public class FieldManager : MonoBehaviour {
     //IEnumerator BlinkRow(int row, int cycles, float secPerCycle) {
     //    for (int i = 0; i < cycles; i++) {
     //        for (int x = 0; x < FWidth; x++) {
-    //            Field[x, row].GetComponent<SpriteRenderer>().enabled = (i % 2 == 0) ? false : true;
+    //            print(x + " " + Field[x, row]);
+    //            //Field[x, row].GetComponent<SpriteRenderer>().enabled = (i % 2 == 0) ? false : true;
     //        }
     //        yield return new WaitForSeconds(secPerCycle);
     //    }
@@ -113,10 +114,8 @@ public class FieldManager : MonoBehaviour {
         board.AddToScore(10);
         for (int i = 0; i < t.childCount; i++) {
             Vector3 childPos = t.GetChild(i).transform.position;
-            print(childPos + " " + new Vector2(Mathf.FloorToInt(childPos.x - LSide), Mathf.FloorToInt(childPos.y)));
             Field[Mathf.FloorToInt(childPos.x - LSide), Mathf.FloorToInt(childPos.y)] = t.GetChild(i).gameObject;
         }
-        print("------------------------------------");
         UpdateLines();
     }
 
