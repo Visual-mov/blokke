@@ -35,6 +35,7 @@ public class FieldManager : MonoBehaviour {
         }
     }
 
+    // Field debug
     private void OnDrawGizmos() {
         if (Application.isPlaying) {
             for (int i = 0; i < FHeight; i++) {
@@ -57,27 +58,32 @@ public class FieldManager : MonoBehaviour {
     public bool ValidateMove(Transform block, Vector4 move) {
         for (int i = 0; i < block.childCount; i++) {
             Vector3 pos = block.GetChild(i).position;
-            if (CheckConstraints(pos + (Vector3)move) || CheckConstraints(CalcRotation(pos, block, move.w)))
+            if (CheckConstraints(pos + (Vector3)move) || CheckConstraints(CalcRotation(pos, block, move)))
                 return false;
             for (int y = 0; y < FHeight; y++) {
                 for (int x = 0; x < FWidth; x++) {
                     if (Field[x, y] == null) continue;
                     Transform FBlock = Field[x, y].transform;
-                    if (FBlock.position == pos + (Vector3)move || FBlock.position == CalcRotation(pos, block, move.w))
+                    if (CompV3(FBlock.position, pos + (Vector3)move) || CompV3(FBlock.position, CalcRotation(pos, block, move)))
                         return false;
                 }
             }
         }
         return true;
     }
-    
+    private bool CompV3(Vector3 a, Vector3 b) {
+        return Vector3.SqrMagnitude(a - b) < 0.0001f;
+    }
+
     // UpdateLines(): Loops through Field and deletes full lines while shifting all rows above.
     public void UpdateLines() {
         for(int y = 0; y < FHeight; y++) {
             while(RowFilled(y)) {
                 board.AddToScore(100);
+                board.AddLine();
+                //StartCoroutine(BlinkRow(y, 4, 0.2f));
                 RemoveRow(y);
-                for(int i = y; i < FHeight; i++) {
+                for (int i = y; i < FHeight; i++) {
                     for (int j = 0; j < FWidth; j++) {
                         GameObject block = Field[j, i];
                         if (i + 1 >= FHeight) {
@@ -93,15 +99,24 @@ public class FieldManager : MonoBehaviour {
         }
     }
 
+    //IEnumerator BlinkRow(int row, int cycles, float secPerCycle) {
+    //    for (int i = 0; i < cycles; i++) {
+    //        for (int x = 0; x < FWidth; x++) {
+    //            Field[x, row].GetComponent<SpriteRenderer>().enabled = (i % 2 == 0) ? false : true;
+    //        }
+    //        yield return new WaitForSeconds(secPerCycle);
+    //    }
+    //}
+
     // AddToField(): Adds block to field array using rounded position as index, as sprite pivot is center.
     public void AddToField(Transform t) {
         board.AddToScore(10);
         for (int i = 0; i < t.childCount; i++) {
             Vector3 childPos = t.GetChild(i).transform.position;
-            print(Mathf.FloorToInt(childPos.x - LSide) + " " + Mathf.FloorToInt(childPos.y));
+            print(childPos + " " + new Vector2(Mathf.FloorToInt(childPos.x - LSide), Mathf.FloorToInt(childPos.y)));
             Field[Mathf.FloorToInt(childPos.x - LSide), Mathf.FloorToInt(childPos.y)] = t.GetChild(i).gameObject;
         }
-        PrintField();
+        print("------------------------------------");
         UpdateLines();
     }
 
@@ -141,17 +156,17 @@ public class FieldManager : MonoBehaviour {
     }
 
     // CheckConstraints(): Returns true if pos is within the field.
-    private bool CheckConstraints(Vector3 pos) {
+    public bool CheckConstraints(Vector3 pos) {
         return (pos.x >= RSide || pos.x <= LSide || pos.y <= 0) ? true : false;
     }
 
     // CalcRotation(): Calculates rotated vector with a counter-clockwise rotation of degree degrees
-    private Vector3 CalcRotation(Vector2 pos, Transform block, float degree) {
+    private Vector3 CalcRotation(Vector2 pos, Transform block, Vector4 move) {
         pos = block.InverseTransformPoint(pos);
-        float a = degree * Mathf.PI / 180;
+        float a = move.w * Mathf.PI / 180;
         float xp = pos.x * Mathf.Cos(a) - pos.y * Mathf.Sin(a);
         float yp = pos.x * Mathf.Sin(a) + pos.y * Mathf.Cos(a);
-        return block.TransformPoint(new Vector3(xp, yp, 0));
+        return block.TransformPoint(new Vector3(xp, yp, 0)) + (Vector3)move;
     }
     // PrintField(): Prints text representation of field array. This is temporary and for debugging purposes.
     public void PrintField() {

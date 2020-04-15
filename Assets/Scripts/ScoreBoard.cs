@@ -8,19 +8,23 @@ public class ScoreBoard : MonoBehaviour {
     FieldManager fm;
     Text scoreText;
     Text linesText;
-    int score, lines, top;
+    int score, lines;
 
     void Awake() {
-        fm = GameObject.Find("Field").GetComponent<FieldManager>();
-        scoreText = transform.Find("Stats").transform.Find("Score").GetComponent<Text>();
-        //linesText = transform.Find("Lines").GetComponent<Text>();
+        //fm = GameObject.Find("Field").GetComponent<FieldManager>();
+        Transform statsBoard = transform.Find("Stats").transform;
+        scoreText = statsBoard.Find("Score").GetComponent<Text>();
+        linesText = statsBoard.Find("Lines").GetComponent<Text>();
         score = 0;
         lines = 0;
-        top = 0;
     }
 
     public void AddToScore(int n) {
         score += n;
         scoreText.text = "Score:" + score;
+    }
+    public void AddLine() {
+        lines += 1;
+        linesText.text = "Lines:" + lines;
     }
 }
