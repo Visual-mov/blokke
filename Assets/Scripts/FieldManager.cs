@@ -71,9 +71,6 @@ public class FieldManager : MonoBehaviour {
         }
         return true;
     }
-    private bool CompV3(Vector3 a, Vector3 b) {
-        return Vector3.SqrMagnitude(a - b) < 0.0001f;
-    }
 
     // UpdateLines(): Loops through Field and deletes full lines while shifting all rows above.
     public void UpdateLines() {
@@ -81,14 +78,13 @@ public class FieldManager : MonoBehaviour {
             while(RowFilled(y)) {
                 board.AddToScore(100);
                 board.AddLine();
-                //StartCoroutine(BlinkRow(y, 4, 0.2f));
+                BlinkRow(y, 4, 0.2f);
                 RemoveRow(y);
                 for (int i = y; i < FHeight; i++) {
                     for (int j = 0; j < FWidth; j++) {
                         GameObject block = Field[j, i];
-                        if (i + 1 >= FHeight) {
-                            RemoveRow(i);
-                        } else {
+                        if (i + 1 >= FHeight) RemoveRow(i);
+                        else {
                             if(block != null) block.transform.Translate(Vector3.down,Space.World);
                             Field[j, i] = Field[j, i + 1];
                         }
@@ -98,15 +94,13 @@ public class FieldManager : MonoBehaviour {
         }
     }
 
-    //IEnumerator BlinkRow(int row, int cycles, float secPerCycle) {
-    //    for (int i = 0; i < cycles; i++) {
-    //        for (int x = 0; x < FWidth; x++) {
-    //            print(x + " " + Field[x, row]);
-    //            //Field[x, row].GetComponent<SpriteRenderer>().enabled = (i % 2 == 0) ? false : true;
-    //        }
-    //        yield return new WaitForSeconds(secPerCycle);
-    //    }
-    //}
+    private void BlinkRow(int row, int cycles, float secPerCycle) {
+        for (int i = 0; i < cycles; i++) {
+            for (int x = 0; x < FWidth; x++) {
+                Field[x, row].GetComponent<SpriteRenderer>().enabled = (i % 2 == 0) ? false : true;
+            }
+        }
+    }
 
     // AddToField(): Adds block to field array using rounded position as index, as sprite pivot is center.
     public void AddToField(Transform t) {
@@ -124,15 +118,6 @@ public class FieldManager : MonoBehaviour {
         SpawnBlock(block);
         BlockQueue.Enqueue(RandomBlock());
         display.UpdatePreview();
-    }
-
-    // SpawnBlock(): Instantiates given block with respect to field position.
-    public void SpawnBlock(GameObject block) {
-        Instantiate(block, block.transform.position + new Vector3(LSide, 0, 0), Quaternion.identity);
-    }
-
-    public GameObject RandomBlock() {
-        return Blocks[Random.Range(0, 6)];
     }
 
     /* Helper Functions */
@@ -166,19 +151,17 @@ public class FieldManager : MonoBehaviour {
         float yp = pos.x * Mathf.Sin(a) + pos.y * Mathf.Cos(a);
         return block.TransformPoint(new Vector3(xp, yp, 0)) + (Vector3)move;
     }
-    // PrintField(): Prints text representation of field array. This is temporary and for debugging purposes.
-    public void PrintField() {
-        string field = "";
-        for(int y = FHeight - 1; y >= 0; y--) {
-            for(int x = 0; x < FWidth; x++) {
-                if(Field[x,y] == null) {
-                    field += "- ";
-                } else {
-                    field += "X ";
-                }
-            }
-            field += "\n";
-        }
-        print(field);
+
+    // SpawnBlock(): Instantiates given block with respect to field position.
+    public void SpawnBlock(GameObject block) {
+        Instantiate(block, block.transform.position + new Vector3(LSide, 0, 0), Quaternion.identity);
+    }
+
+    public GameObject RandomBlock() {
+        return Blocks[Random.Range(0, 6)];
+    }
+
+    private bool CompV3(Vector3 a, Vector3 b) {
+        return Vector3.SqrMagnitude(a - b) < 0.0001f;
     }
 }
