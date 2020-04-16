@@ -1346,8 +1346,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Blokke is Tetris clone. I created it as away to familiar myself with Unity,
-    and to have Tetris on my computer if I get bored. :) Controls are as follows:'
+  m_Text: 'Blokke is Tetris clone. I created it as a way to familiarize myself with
+    Unity and to have Tetris on my computer if I get bored :) Controls are as follows:'
 --- !u!222 &1987398580
 CanvasRenderer:
   m_ObjectHideFlags: 0
