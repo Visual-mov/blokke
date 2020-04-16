@@ -57,14 +57,16 @@ public class FieldManager : MonoBehaviour {
     // ValidateMove(): Checks if a given move hits constraints or other blocks, and if so returns false.
     public bool ValidateMove(Transform block, Vector4 move) {
         for (int i = 0; i < block.childCount; i++) {
-            Vector3 pos = block.GetChild(i).position;
-            if (CheckConstraints(pos + (Vector3)move) || CheckConstraints(CalcRotation(pos, block, move)))
+            Vector2 pos = block.GetChild(i).position;
+            Vector2 rotatedPos = CalcRotation(pos, block, move);
+            if (CheckConstraints(pos + (Vector2)move) || CheckConstraints(rotatedPos))
                 return false;
             for (int y = 0; y < FHeight; y++) {
                 for (int x = 0; x < FWidth; x++) {
-                    if (Field[x, y] == null) continue;
+                    if (Field[x, y] == null)
+                        continue;
                     Transform FBlock = Field[x, y].transform;
-                    if (CompV3(FBlock.position, pos + (Vector3)move) || CompV3(FBlock.position, CalcRotation(pos, block, move)))
+                    if (CompVector(FBlock.position, pos + (Vector2)move) || CompVector(FBlock.position, rotatedPos))
                         return false;
                 }
             }
@@ -78,14 +80,14 @@ public class FieldManager : MonoBehaviour {
             while(RowFilled(y)) {
                 board.AddToScore(100);
                 board.AddLine();
-                BlinkRow(y, 4, 0.2f);
+                //BlinkRow(y, 4, 0.2f);
                 RemoveRow(y);
                 for (int i = y; i < FHeight; i++) {
                     for (int j = 0; j < FWidth; j++) {
                         GameObject block = Field[j, i];
                         if (i + 1 >= FHeight) RemoveRow(i);
                         else {
-                            if(block != null) block.transform.Translate(Vector3.down,Space.World);
+                            if(block != null) block.transform.Translate(Vector2.down,Space.World);
                             Field[j, i] = Field[j, i + 1];
                         }
                     }
@@ -106,7 +108,7 @@ public class FieldManager : MonoBehaviour {
     public void AddToField(Transform t) {
         board.AddToScore(10);
         for (int i = 0; i < t.childCount; i++) {
-            Vector3 childPos = t.GetChild(i).transform.position;
+            Vector2 childPos = t.GetChild(i).transform.position;
             Field[Mathf.FloorToInt(childPos.x - LSide), Mathf.FloorToInt(childPos.y)] = t.GetChild(i).gameObject;
         }
         UpdateLines();
@@ -161,7 +163,7 @@ public class FieldManager : MonoBehaviour {
         return Blocks[Random.Range(0, 6)];
     }
 
-    private bool CompV3(Vector3 a, Vector3 b) {
-        return Vector3.SqrMagnitude(a - b) < 0.0001f;
+    private bool CompVector(Vector2 a, Vector2 b) {
+        return Vector2.SqrMagnitude(a - b) < 0.0001f;
     }
 }

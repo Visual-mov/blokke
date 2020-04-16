@@ -54,7 +54,7 @@ public class Block : MonoBehaviour {
 
     // Tick(): Checks if block is at the bottom of the field and disables it if so, otherwise moves the block down.
     private void Tick() {
-        Vector3 move = Vector3.down;
+        Vector2 move = Vector2.down;
         if (fm.ValidateMove(transform, move)) {
             transform.Translate(move, Space.World);
         } else {
