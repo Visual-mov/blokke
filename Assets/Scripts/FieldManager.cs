@@ -22,7 +22,6 @@ public class FieldManager : MonoBehaviour {
         board = GameObject.Find("Canvas").GetComponent<ScoreBoard>();
         Field = new GameObject[FWidth, FHeight];
         BlockQueue = new Queue<GameObject>();
-
         string[] names = {
             "I-Block", "J-Block",
             "L-Block", "O-Block",
@@ -160,7 +159,7 @@ public class FieldManager : MonoBehaviour {
     }
 
     public GameObject RandomBlock() {
-        return Blocks[Random.Range(0, 6)];
+        return Blocks[Random.Range(0, 7)];
     }
 
     private bool CompVector(Vector2 a, Vector2 b) {
