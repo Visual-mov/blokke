@@ -7,18 +7,20 @@ public class Block : MonoBehaviour {
     private FieldManager fm;
     public bool active;
     private Vector2 lastInput;
+    private float fallTime;
 
     void Awake() {
         fm = GameObject.Find("Field").GetComponent<FieldManager>();
         active = true;
-        InvokeRepeating("Tick", 0.8f, 0.8f);
+        fallTime = 0.8f;
         lastInput = Vector2.zero;
     }
 
     void Start() {
-        if (!fm.ValidateMove(transform, Vector3.zero) && active) {
+        if (fm.ValidateMove(transform, Vector3.zero))
+            StartCoroutine("Tick");
+        else if (active)
             Destroy(transform.gameObject);
-        }
     }
 
     void Update() {
@@ -53,20 +55,24 @@ public class Block : MonoBehaviour {
     }
 
     // Tick(): Checks if block is at the bottom of the field and disables it if so, otherwise moves the block down.
-    private void Tick() {
+    private IEnumerator Tick() {
         Vector2 move = Vector2.down;
-        if (fm.ValidateMove(transform, move)) {
-            transform.Translate(move, Space.World);
-        } else {
-            Disable();
-            fm.AddToField(transform);
-            fm.SpawnNextBlock();
+        while (true) {
+            yield return new WaitForSeconds(fallTime);
+            if (fm.ValidateMove(transform, move))
+                transform.Translate(move, Space.World);
+            else {
+                Disable();
+                fm.AddToField(transform);
+                fm.SpawnNextBlock();
+                break;
+            }
         }
     }
 
     // Disable(): Disables checking of user input and tick execution.
     public void Disable() {
         active = false;
-        CancelInvoke("Tick");
+        StopCoroutine("Tick");
     }
 }

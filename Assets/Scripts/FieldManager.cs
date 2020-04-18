@@ -122,7 +122,6 @@ public class FieldManager : MonoBehaviour {
     }
 
     /* Helper Functions */
-
     // RowFilled(): Returns true if given row is full.
     private bool RowFilled(int row) {
         for (int x = 0; x < FWidth; x++) {
