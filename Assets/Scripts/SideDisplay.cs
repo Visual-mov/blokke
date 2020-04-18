@@ -44,11 +44,11 @@ public class SideDisplay : MonoBehaviour {
     }
 
     private void MoveBlock(GameObject g, Vector3 pos, Transform t) {
+        g.GetComponent<Block>().Disable();
         g.transform.rotation = Quaternion.identity;
         g.transform.localScale = new Vector2(0.55f,0.55f);
         g.transform.position = pos - ReturnCenter(g.transform);
         g.transform.parent = t;
-        g.GetComponent<Block>().Disable();
     }
 
     private Vector3 ReturnCenter(Transform block) {

@@ -16,13 +16,13 @@ public class Block : MonoBehaviour {
     }
 
     void Start() {
-        if(!fm.ValidateMove(transform,Vector3.zero) && active) {
+        if (!fm.ValidateMove(transform, Vector3.zero) && active) {
             Destroy(transform.gameObject);
         }
     }
 
     void Update() {
-        if(active)
+        if (active)
             CheckInput();
         if (transform.childCount == 0)
             Destroy(transform.gameObject);
