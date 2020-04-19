@@ -15,7 +15,7 @@ public class FieldManager : MonoBehaviour {
     GameObject[,] Field;
 
     public SideDisplay display;
-    private ScoreBoard board;
+    ScoreBoard board;
 
     void Awake() {
         LSide = transform.position.x - FWidth / 2;
@@ -24,7 +24,6 @@ public class FieldManager : MonoBehaviour {
         display = GameObject.Find("SideDisplay").GetComponent<SideDisplay>();
         board = GameObject.Find("Canvas").GetComponent<ScoreBoard>();
         Field = new GameObject[FWidth, FHeight];
-        BlockQueue = new Queue<GameObject>();
         string[] names = {
             "I-Block", "J-Block",
             "L-Block", "O-Block",
@@ -35,6 +34,7 @@ public class FieldManager : MonoBehaviour {
         for (int i = 0; i < names.Length; i++) {
             Blocks[i] = (GameObject)Resources.Load("Prefabs/" + names[i]);
         }
+        InitQueue();
     }
 
     // Field debug
@@ -50,14 +50,7 @@ public class FieldManager : MonoBehaviour {
     }
 
     void Start() {
-        for (int i = 0; i < QueueLength; i++) {
-            BlockQueue.Enqueue(RandomBlock());
-        }
         SpawnNextBlock();
-    }
-
-    void Update() {
-        print(fallTime);
     }
 
     // ValidateMove(): Checks if a given move hits constraints or other blocks, and if so returns false.
@@ -82,18 +75,18 @@ public class FieldManager : MonoBehaviour {
 
     // UpdateLines(): Loops through Field and deletes full lines while shifting all rows above.
     public void UpdateLines() {
-        for(int y = 0; y < FHeight; y++) {
-            while(RowFilled(y)) {
+        for (int y = 0; y < FHeight; y++) {
+            while (RowFilled(y)) {
                 board.AddToScore(100);
                 board.AddLine();
                 //BlinkRow(y, 4, 0.2f);
                 RemoveRow(y);
                 for (int i = y; i < FHeight; i++) {
                     for (int j = 0; j < FWidth; j++) {
-                        GameObject block = Field[j, i];
-                        if (i + 1 >= FHeight) RemoveRow(i);
+                        if (i + 1 >= FHeight)
+                            RemoveRow(i);
                         else {
-                            if(block != null) block.transform.Translate(Vector2.down,Space.World);
+                            if (Field[j, i] != null) Field[j, i].transform.Translate(Vector2.down,Space.World);
                             Field[j, i] = Field[j, i + 1];
                         }
                     }
@@ -102,7 +95,7 @@ public class FieldManager : MonoBehaviour {
         }
     }
 
-    private void BlinkRow(int row, int cycles, float secPerCycle) {
+    void BlinkRow(int row, int cycles, float secPerCycle) {
         for (int i = 0; i < cycles; i++) {
             for (int x = 0; x < FWidth; x++) {
                 Field[x, row].GetComponent<SpriteRenderer>().enabled = (i % 2 == 0) ? false : true;
@@ -122,16 +115,26 @@ public class FieldManager : MonoBehaviour {
 
     // SpawnNextBlock(): Instantiates next block, and adds a random block to the end of the queue.
     public void SpawnNextBlock() {
-        curBlock = BlockQueue.Dequeue();
-        curBlock.GetComponent<Block>().fallTime = fallTime;
-        SpawnBlock(curBlock);
+        GameObject block = BlockQueue.Dequeue();
+        block.GetComponent<Block>().fallTime = fallTime;
+        SpawnBlock(block);
         BlockQueue.Enqueue(RandomBlock());
         display.UpdatePreview();
     }
 
+    public void RestartGame() {
+        for (int y = 0; y < FHeight; y++) {
+            RemoveRow(y);
+        }
+        Destroy(curBlock);
+        board.ResetStats();
+        InitQueue();
+        SpawnNextBlock();
+    }
+
     /* Helper Functions */
     // RowFilled(): Returns true if given row is full.
-    private bool RowFilled(int row) {
+    bool RowFilled(int row) {
         for (int x = 0; x < FWidth; x++) {
             if (Field[x, row] == null) return false;
         }
@@ -139,7 +142,7 @@ public class FieldManager : MonoBehaviour {
     }
 
     // RemoveRow(): Removes given row from field array.
-    private void RemoveRow(int row) {
+    void RemoveRow(int row) {
         for (int x = 0; x < FWidth; x++) { 
             Destroy(Field[x, row]);
             Field[x, row] = null;
@@ -152,7 +155,7 @@ public class FieldManager : MonoBehaviour {
     }
 
     // CalcRotation(): Calculates rotated vector with a counter-clockwise rotation of degree degrees
-    private Vector3 CalcRotation(Vector2 pos, Transform block, Vector4 move) {
+    Vector3 CalcRotation(Vector2 pos, Transform block, Vector4 move) {
         pos = block.InverseTransformPoint(pos);
         float a = move.w * Mathf.PI / 180;
         float xp = pos.x * Mathf.Cos(a) - pos.y * Mathf.Sin(a);
@@ -162,14 +165,21 @@ public class FieldManager : MonoBehaviour {
 
     // SpawnBlock(): Instantiates given block with respect to field position.
     public void SpawnBlock(GameObject block) {
-        Instantiate(block, block.transform.position + new Vector3(LSide, 0, 0), Quaternion.identity);
+        curBlock = Instantiate(block, block.transform.position + new Vector3(LSide, 0, 0), Quaternion.identity);
     }
 
     public GameObject RandomBlock() {
         return Blocks[Random.Range(0, 7)];
     }
 
-    private bool CompVector(Vector2 a, Vector2 b) {
+    bool CompVector(Vector2 a, Vector2 b) {
         return Vector2.SqrMagnitude(a - b) < 0.0001f;
+    }
+
+    void InitQueue() {
+        BlockQueue = new Queue<GameObject>();
+        for (int i = 0; i < QueueLength; i++) {
+            BlockQueue.Enqueue(RandomBlock());
+        }
     }
 }

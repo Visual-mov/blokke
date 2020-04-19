@@ -33,21 +33,22 @@ public class Block : MonoBehaviour {
     private void CheckInput() {
         Vector4 move = new Vector4();
         Vector2 input = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        if (Input.GetKeyDown(KeyCode.A)) move.x = -1.0f;
-        if (Input.GetKeyDown(KeyCode.D)) move.x = 1.0f;
+
+        move.x += Input.GetKeyDown(KeyCode.A) ? -1 : 0;
+        move.x += Input.GetKeyDown(KeyCode.D) ? 1 : 0;
+        move.w += Input.GetButtonDown("Rotate") ? 90 : 0;
         if (Input.GetKeyDown(KeyCode.S) || Input.GetKey(KeyCode.W) || Input.GetAxis("Vertical") == -1) move.y = -1.0f;
-        if (Input.GetButtonDown("Rotate")) move.w = 90.0f;
         if (Input.GetButtonDown("Hold")) fm.display.HoldBlock(transform.gameObject);
+
         if (input.x != lastInput.x || input.y != lastInput.y) {
             if (input.x == -1) move.x = -1.0f;
             else if (input.x == 1) move.x = 1.0f;
             if (input.y == 1) move.y = -1.0f;
         }
 
-        if (fm.ValidateMove(transform, move)) {
-            transform.Translate(move.x, move.y, move.z, Space.World);
+        if (fm.ValidateMove(transform, move) && move != Vector4.zero) {
+            transform.Translate(move, Space.World);
             transform.Rotate(new Vector3(0, 0, move.w));
-
         }
         lastInput = input;
     }
