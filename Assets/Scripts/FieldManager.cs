@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FieldManager : MonoBehaviour {
 
@@ -13,6 +14,7 @@ public class FieldManager : MonoBehaviour {
     const int FHeight = 20;
     float LSide, RSide;
     GameObject[,] Field;
+    Text overText;
 
     public SideDisplay display;
     ScoreBoard board;
@@ -24,6 +26,7 @@ public class FieldManager : MonoBehaviour {
         display = GameObject.Find("SideDisplay").GetComponent<SideDisplay>();
         board = GameObject.Find("Canvas").GetComponent<ScoreBoard>();
         Field = new GameObject[FWidth, FHeight];
+        overText = GameObject.Find("Canvas").transform.Find("OverText").GetComponent<Text>();
         string[] names = {
             "I-Block", "J-Block",
             "L-Block", "O-Block",
@@ -123,13 +126,17 @@ public class FieldManager : MonoBehaviour {
     }
 
     public void RestartGame() {
-        for (int y = 0; y < FHeight; y++) {
-            RemoveRow(y);
-        }
+        overText.enabled = false;
+        for (int y = 0; y < FHeight; y++) RemoveRow(y);
         Destroy(curBlock);
-        board.ResetStats();
+        board.InitStats();
         InitQueue();
         SpawnNextBlock();
+    }
+
+    public void EndGame() {
+        Destroy(curBlock);
+        overText.enabled = true;
     }
 
     /* Helper Functions */
@@ -166,6 +173,9 @@ public class FieldManager : MonoBehaviour {
     // SpawnBlock(): Instantiates given block with respect to field position.
     public void SpawnBlock(GameObject block) {
         curBlock = Instantiate(block, block.transform.position + new Vector3(LSide, 0, 0), Quaternion.identity);
+        if (!ValidateMove(curBlock.transform, Vector3.zero)) {
+            EndGame();
+        }
     }
 
     public GameObject RandomBlock() {

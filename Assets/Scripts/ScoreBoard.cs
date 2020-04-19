@@ -12,13 +12,12 @@ public class ScoreBoard : MonoBehaviour {
 
     void Awake() {
         levelNum = 1000;
-        nextUp = levelNum;
-        level = 1;
         fm = GameObject.Find("Field").GetComponent<FieldManager>();
         Transform statsBoard = transform.Find("Board").transform;
         scoreText = statsBoard.Find("Score").GetComponent<Text>();
         linesText = statsBoard.Find("Lines").GetComponent<Text>();
         levelText = statsBoard.Find("Level").GetComponent<Text>();
+        InitStats();
     }
 
     public void AddToScore(int n) {
@@ -41,13 +40,13 @@ public class ScoreBoard : MonoBehaviour {
         }
     }
 
-    public void ResetStats() {
+    public void InitStats() {
         scoreText.text = "Score:0";
         linesText.text = "Lines:0";
         levelText.text = "Level:1";
         score = 0;
         lines = 0;
-        level = 0;
-        nextUp = 0;
+        level = 1;
+        nextUp = levelNum;
     }
 }

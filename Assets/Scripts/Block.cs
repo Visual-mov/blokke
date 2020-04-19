@@ -18,8 +18,6 @@ public class Block : MonoBehaviour {
     void Start() {
         if (fm.ValidateMove(transform, Vector3.zero))
             StartCoroutine("Tick");
-        else if (active)
-            Destroy(transform.gameObject);
     }
 
     void Update() {
