@@ -20,7 +20,7 @@ public class FieldManager : MonoBehaviour {
     void Awake() {
         LSide = transform.position.x - FWidth / 2;
         RSide = transform.position.x + FWidth / 2;
-        fallTime = 0.8f;
+        fallTime = 1.0f;
         display = GameObject.Find("SideDisplay").GetComponent<SideDisplay>();
         board = GameObject.Find("Canvas").GetComponent<ScoreBoard>();
         Field = new GameObject[FWidth, FHeight];

@@ -17,6 +17,7 @@ public class ScoreBoard : MonoBehaviour {
         linesText = statsBoard.Find("Lines").GetComponent<Text>();
         levelText = statsBoard.Find("Level").GetComponent<Text>();
         nextUp = 1000;
+        level = 1;
     }
 
     public void AddToScore(int n) {
