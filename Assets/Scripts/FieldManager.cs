@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class FieldManager : MonoBehaviour {
 
-    const int FWidth = 10;
-    const int FHeight = 20;
     public int QueueLength = 3;
     public GameObject[] Blocks;
     public Queue<GameObject> BlockQueue;
-    private GameObject[,] Field;
-    private float LSide, RSide;
+    public GameObject curBlock;
+    public float fallTime;
+    const int FWidth = 10;
+    const int FHeight = 20;
+    float LSide, RSide;
+    GameObject[,] Field;
 
     public SideDisplay display;
     private ScoreBoard board;
@@ -18,6 +20,7 @@ public class FieldManager : MonoBehaviour {
     void Awake() {
         LSide = transform.position.x - FWidth / 2;
         RSide = transform.position.x + FWidth / 2;
+        fallTime = 0.8f;
         display = GameObject.Find("SideDisplay").GetComponent<SideDisplay>();
         board = GameObject.Find("Canvas").GetComponent<ScoreBoard>();
         Field = new GameObject[FWidth, FHeight];
@@ -51,6 +54,10 @@ public class FieldManager : MonoBehaviour {
             BlockQueue.Enqueue(RandomBlock());
         }
         SpawnNextBlock();
+    }
+
+    void Update() {
+        print(fallTime);
     }
 
     // ValidateMove(): Checks if a given move hits constraints or other blocks, and if so returns false.
@@ -115,8 +122,9 @@ public class FieldManager : MonoBehaviour {
 
     // SpawnNextBlock(): Instantiates next block, and adds a random block to the end of the queue.
     public void SpawnNextBlock() {
-        GameObject block = BlockQueue.Dequeue();
-        SpawnBlock(block);
+        curBlock = BlockQueue.Dequeue();
+        curBlock.GetComponent<Block>().fallTime = fallTime;
+        SpawnBlock(curBlock);
         BlockQueue.Enqueue(RandomBlock());
         display.UpdatePreview();
     }

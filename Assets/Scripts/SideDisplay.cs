@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SideDisplay : MonoBehaviour {
-    private FieldManager fm;
-    private Transform preview, hold;
-    private GameObject heldBlock;
-    private GameObject[] preQueue;
-    private bool holding;
+
+    FieldManager fm;
+    Transform preview, hold;
+    GameObject heldBlock;
+    GameObject[] preQueue;
+    bool holding;
 
     private void Awake() {
         fm = GameObject.Find("Field").GetComponent<FieldManager>();

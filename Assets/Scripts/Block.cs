@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class Block : MonoBehaviour {
 
-    private FieldManager fm;
     public bool active;
-    private Vector2 lastInput;
-    private float fallTime;
+    public float fallTime;
+    FieldManager fm;
+    Vector2 lastInput;
 
     void Awake() {
         fm = GameObject.Find("Field").GetComponent<FieldManager>();
         active = true;
-        fallTime = 0.8f;
         lastInput = Vector2.zero;
     }
 
@@ -34,7 +33,6 @@ public class Block : MonoBehaviour {
     private void CheckInput() {
         Vector4 move = new Vector4();
         Vector2 input = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-
         if (Input.GetKeyDown(KeyCode.A)) move.x = -1.0f;
         if (Input.GetKeyDown(KeyCode.D)) move.x = 1.0f;
         if (Input.GetKeyDown(KeyCode.S) || Input.GetKey(KeyCode.W) || Input.GetAxis("Vertical") == -1) move.y = -1.0f;
