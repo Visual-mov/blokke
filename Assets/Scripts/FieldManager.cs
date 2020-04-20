@@ -131,6 +131,7 @@ public class FieldManager : MonoBehaviour {
         Destroy(curBlock);
         board.InitStats();
         InitQueue();
+        display.RemoveHeld();
         SpawnNextBlock();
     }
 

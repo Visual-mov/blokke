@@ -44,7 +44,12 @@ public class SideDisplay : MonoBehaviour {
 
     }
 
-    private void MoveBlock(GameObject g, Vector3 pos, Transform t) {
+    public void RemoveHeld() {
+        Destroy(heldBlock);
+        holding = false;
+    }
+
+    void MoveBlock(GameObject g, Vector3 pos, Transform t) {
         g.GetComponent<Block>().Disable();
         g.transform.rotation = Quaternion.identity;
         g.transform.localScale = new Vector2(0.55f,0.55f);
@@ -52,7 +57,7 @@ public class SideDisplay : MonoBehaviour {
         g.transform.parent = t;
     }
 
-    private Vector3 ReturnCenter(Transform block) {
+    Vector3 ReturnCenter(Transform block) {
         Vector3 center = Vector3.zero;
         for(int i = 0; i < block.childCount; i++) {
             center += block.GetChild(i).transform.localPosition;
