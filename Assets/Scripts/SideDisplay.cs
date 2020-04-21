@@ -18,6 +18,7 @@ public class SideDisplay : MonoBehaviour {
         preQueue = new GameObject[fm.queueLength];
     }
 
+    // UpdatePreview: Updates blocks being displayed in preview to show block queue.
     public void UpdatePreview() {
         GameObject[] blocks = fm.blockQueue.ToArray();
         float pHeight = preview.TransformVector(preview.GetComponent<BoxCollider2D>().size).y;
@@ -30,6 +31,7 @@ public class SideDisplay : MonoBehaviour {
         }
     }
 
+    // HoldBlock: Puts given block in holding position and spawn previously held block if it exists. If not, spawns next block in queue.
     public void HoldBlock(GameObject block) {
         if (!holding) {
             fm.SpawnNextBlock();
@@ -44,11 +46,7 @@ public class SideDisplay : MonoBehaviour {
 
     }
 
-    public void RemoveHeld() {
-        Destroy(heldBlock);
-        holding = false;
-    }
-
+    // MoveBlock: Disables and displays block at given position.
     void MoveBlock(GameObject g, Vector3 pos, Transform t) {
         g.GetComponent<Block>().Disable();
         g.transform.rotation = Quaternion.identity;
@@ -57,11 +55,17 @@ public class SideDisplay : MonoBehaviour {
         g.transform.parent = t;
     }
 
+    // ReturnCenter: Calculates true center of block with respect to all children, instead of pivot.
     Vector3 ReturnCenter(Transform block) {
         Vector3 center = Vector3.zero;
         for(int i = 0; i < block.childCount; i++) {
             center += block.GetChild(i).transform.localPosition;
         }
         return Vector3.Scale(center / block.childCount, block.localScale);
+    }
+
+    public void RemoveHeld() {
+        Destroy(heldBlock);
+        holding = false;
     }
 }

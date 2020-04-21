@@ -27,7 +27,7 @@ public class Block : MonoBehaviour {
             Destroy(transform.gameObject);
     }
 
-    // CheckInput(): Listens for user input, and executes according action.
+    // CheckInput: Listens for user input, and executes according action(s).
     void CheckInput() {
         Vector4 move = new Vector4();
         Vector2 input = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
@@ -51,7 +51,7 @@ public class Block : MonoBehaviour {
         lastInput = input;
     }
 
-    // Tick(): Checks if block is at the bottom of the field and disables it if so, otherwise moves the block down.
+    // Tick: Checks if block is at bottom of the field and disables if true, otherwise moves the block down.
     IEnumerator Tick() {
         Vector2 move = Vector2.down;
         while (true) {
@@ -67,7 +67,6 @@ public class Block : MonoBehaviour {
         }
     }
 
-    // Disable(): Disables checking of user input and tick execution.
     public void Disable() {
         active = false;
         StopCoroutine("Tick");

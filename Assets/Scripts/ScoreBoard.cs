@@ -31,6 +31,7 @@ public class ScoreBoard : MonoBehaviour {
         linesText.text = "Lines:" + lines;
     }
 
+    // IncrementLevel: Increases level and difficulty (speed of block's decent)
     public void IncrementLevel() {
         nextUp += levelNum;
         if (fm.fallTime >= 0.2) {
@@ -40,6 +41,7 @@ public class ScoreBoard : MonoBehaviour {
         }
     }
 
+    // InitStats: Resets state of score board.
     public void InitStats() {
         scoreText.text = "Score:0";
         linesText.text = "Lines:0";

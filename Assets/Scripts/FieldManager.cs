@@ -56,7 +56,7 @@ public class FieldManager : MonoBehaviour {
         SpawnNextBlock();
     }
 
-    // ValidateMove(): Checks if a given move hits constraints or other blocks, and if so returns false.
+    // ValidateMove: Checks if a given move hits constraints or other blocks, and if so returns false.
     public bool ValidateMove(Transform block, Vector4 move) {
         for (int i = 0; i < block.childCount; i++) {
             Vector2 pos = block.GetChild(i).position;
@@ -76,13 +76,12 @@ public class FieldManager : MonoBehaviour {
         return true;
     }
 
-    // UpdateLines(): Loops through Field and deletes full lines while shifting all rows above.
+    // UpdateLines: Loops through Field and deletes full lines while shifting all rows above.
     public void UpdateLines() {
         for (int y = 0; y < fHeight; y++) {
             while (RowFilled(y)) {
                 board.AddToScore(100);
                 board.AddLine();
-                //BlinkRow(y, 4, 0.2f);
                 RemoveRow(y);
                 for (int i = y; i < fHeight; i++) {
                     for (int j = 0; j < fWidth; j++) {
@@ -98,15 +97,7 @@ public class FieldManager : MonoBehaviour {
         }
     }
 
-    void BlinkRow(int row, int cycles, float secPerCycle) {
-        for (int i = 0; i < cycles; i++) {
-            for (int x = 0; x < fWidth; x++) {
-                field[x, row].GetComponent<SpriteRenderer>().enabled = (i % 2 == 0) ? false : true;
-            }
-        }
-    }
-
-    // AddToField(): Adds block to field array using rounded position as index, as sprite pivot is center.
+    // AddToField: Adds block to field array using rounded position as index, as sprite pivot is center.
     public void AddToField(Transform t) {
         board.AddToScore(10);
         for (int i = 0; i < t.childCount; i++) {
@@ -116,7 +107,7 @@ public class FieldManager : MonoBehaviour {
         UpdateLines();
     }
 
-    // SpawnNextBlock(): Instantiates next block, and adds a random block to the end of the queue.
+    // SpawnNextBlock: Instantiates next block, and adds a random block to the end of the queue.
     public void SpawnNextBlock() {
         GameObject block = blockQueue.Dequeue();
         block.GetComponent<Block>().fallTime = fallTime;
@@ -125,6 +116,7 @@ public class FieldManager : MonoBehaviour {
         display.UpdatePreview();
     }
 
+    /* Restart & end game functions */
     public void RestartGame() {
         overText.enabled = false;
         Destroy(curBlock);
@@ -141,7 +133,7 @@ public class FieldManager : MonoBehaviour {
     }
 
     /* Helper Functions */
-    // RowFilled(): Returns true if given row is full.
+    // RowFilled: Returns true if given row is full.
     bool RowFilled(int row) {
         for (int x = 0; x < fWidth; x++) {
             if (field[x, row] == null) return false;
@@ -149,7 +141,7 @@ public class FieldManager : MonoBehaviour {
         return true;
     }
 
-    // RemoveRow(): Removes given row from field array.
+    // RemoveRow: Removes given row from field array.
     void RemoveRow(int row) {
         for (int x = 0; x < fWidth; x++) { 
             Destroy(field[x, row]);
@@ -157,12 +149,12 @@ public class FieldManager : MonoBehaviour {
         }
     }
 
-    // CheckConstraints(): Returns true if pos is within the field.
+    // CheckConstraints: Returns true if pos is within the field.
     public bool CheckConstraints(Vector3 pos) {
         return (pos.x >= rSide || pos.x <= lSide || pos.y <= 0) ? true : false;
     }
 
-    // CalcRotation(): Calculates rotated vector with a counter-clockwise rotation of degree degrees
+    // CalcRotation: Calculates rotated vector with a counter-clockwise rotation of degree degrees
     Vector3 CalcRotation(Vector2 pos, Transform block, Vector4 move) {
         pos = block.InverseTransformPoint(pos);
         float a = move.w * Mathf.PI / 180;
@@ -171,7 +163,7 @@ public class FieldManager : MonoBehaviour {
         return block.TransformPoint(new Vector3(xp, yp, 0)) + (Vector3)move;
     }
 
-    // SpawnBlock(): Instantiates given block with respect to field position.
+    // SpawnBlock: Instantiates given block with respect to field position.
     public void SpawnBlock(GameObject block) {
         curBlock = Instantiate(block, block.transform.position + new Vector3(lSide, 0, 0), Quaternion.identity);
         if (!ValidateMove(curBlock.transform, Vector3.zero)) {
