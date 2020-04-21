@@ -15,11 +15,11 @@ public class SideDisplay : MonoBehaviour {
         preview = transform.Find("Preview");
         hold = transform.Find("Hold");
         holding = false;
-        preQueue = new GameObject[fm.QueueLength];
+        preQueue = new GameObject[fm.queueLength];
     }
 
     public void UpdatePreview() {
-        GameObject[] blocks = fm.BlockQueue.ToArray();
+        GameObject[] blocks = fm.blockQueue.ToArray();
         float pHeight = preview.TransformVector(preview.GetComponent<BoxCollider2D>().size).y;
         for (int i = 0; i < blocks.Length; i++) {
             Destroy(preQueue[i]);

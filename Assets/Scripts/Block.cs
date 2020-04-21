@@ -28,7 +28,7 @@ public class Block : MonoBehaviour {
     }
 
     // CheckInput(): Listens for user input, and executes according action.
-    private void CheckInput() {
+    void CheckInput() {
         Vector4 move = new Vector4();
         Vector2 input = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
@@ -52,7 +52,7 @@ public class Block : MonoBehaviour {
     }
 
     // Tick(): Checks if block is at the bottom of the field and disables it if so, otherwise moves the block down.
-    private IEnumerator Tick() {
+    IEnumerator Tick() {
         Vector2 move = Vector2.down;
         while (true) {
             yield return new WaitForSeconds(fallTime);

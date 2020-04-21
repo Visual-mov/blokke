@@ -241,8 +241,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -140, y: 0}
-  m_SizeDelta: {x: 275, y: 125}
+  m_AnchoredPosition: {x: -130, y: 0}
+  m_SizeDelta: {x: 200, y: 125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &256269031
 MonoBehaviour:
@@ -275,13 +275,13 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'W / Up control pad
+  m_Text: 'W / Up d-pad
 
-    S / Down control pad
+    S / Down d-pad
 
-    A / Left control pad
+    A / Left d-pad
 
-    D / Right control pad
+    D / Right d-pad
 
     Q / Button 2
 
