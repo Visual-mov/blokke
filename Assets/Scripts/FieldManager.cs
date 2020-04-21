@@ -127,17 +127,17 @@ public class FieldManager : MonoBehaviour {
 
     public void RestartGame() {
         overText.enabled = false;
-        for (int y = 0; y < fHeight; y++) RemoveRow(y);
         Destroy(curBlock);
         board.InitStats();
         InitQueue();
         display.RemoveHeld();
+        for (int y = 0; y < fHeight; y++) RemoveRow(y);
         SpawnNextBlock();
     }
 
     public void EndGame() {
-        Destroy(curBlock);
         overText.enabled = true;
+        Destroy(curBlock);
     }
 
     /* Helper Functions */
