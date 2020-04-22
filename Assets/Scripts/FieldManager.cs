@@ -5,13 +5,12 @@ using UnityEngine.UI;
 
 public class FieldManager : MonoBehaviour {
 
-    public int queueLength = 3;
     public GameObject[] blocks;
-    public Queue<GameObject> blockQueue;
     public GameObject curBlock;
+    public Queue<GameObject> blockQueue;
     public float fallTime;
-    const int fWidth = 10;
-    const int fHeight = 20;
+    public int queueLength;
+    int fWidth, fHeight;
     float lSide, rSide;
     GameObject[,] field;
     Text overText;
@@ -20,13 +19,20 @@ public class FieldManager : MonoBehaviour {
     ScoreBoard board;
 
     void Awake() {
+        Vector3 size = transform.TransformVector(transform.GetComponent<BoxCollider2D>().size);
+        fWidth = (int)size.x;
+        fHeight = (int)size.y;
+
         lSide = transform.position.x - fWidth / 2;
         rSide = transform.position.x + fWidth / 2;
         fallTime = 1.0f;
+        queueLength = 3;
+        
         display = GameObject.Find("SideDisplay").GetComponent<SideDisplay>();
         board = GameObject.Find("Canvas").GetComponent<ScoreBoard>();
-        field = new GameObject[fWidth, fHeight];
         overText = GameObject.Find("Canvas").transform.Find("OverText").GetComponent<Text>();
+        field = new GameObject[fWidth, fHeight];
+
         string[] names = {
             "I-Block", "J-Block",
             "L-Block", "O-Block",
@@ -59,16 +65,16 @@ public class FieldManager : MonoBehaviour {
     // ValidateMove: Checks if a given move hits constraints or other blocks, and if so returns false.
     public bool ValidateMove(Transform block, Vector4 move) {
         for (int i = 0; i < block.childCount; i++) {
-            Vector2 pos = block.GetChild(i).position;
-            Vector2 rotatedPos = CalcRotation(pos, block, move);
-            if (CheckConstraints(pos + (Vector2)move) || CheckConstraints(rotatedPos))
+            Vector3 pos = block.GetChild(i).position;
+            Vector3 rotatedPos = CalcRotation(pos, block, move);
+            if (CheckConstraints(pos + (Vector3)move) || CheckConstraints(rotatedPos))
                 return false;
             for (int y = 0; y < fHeight; y++) {
                 for (int x = 0; x < fWidth; x++) {
                     if (field[x, y] == null)
                         continue;
                     Transform FBlock = field[x, y].transform;
-                    if (CompVector(FBlock.position, pos + (Vector2)move) || CompVector(FBlock.position, rotatedPos))
+                    if (FBlock.position == pos + (Vector3)move || FBlock.position == rotatedPos)
                         return false;
                 }
             }
@@ -151,7 +157,7 @@ public class FieldManager : MonoBehaviour {
 
     // CheckConstraints: Returns true if pos is within the field.
     public bool CheckConstraints(Vector3 pos) {
-        return (pos.x >= rSide || pos.x <= lSide || pos.y <= 0) ? true : false;
+        return (pos.x >= rSide || pos.x <= lSide || pos.y <= transform.position.y - fHeight / 2) ? true : false;
     }
 
     // CalcRotation: Calculates rotated vector with a counter-clockwise rotation of degree degrees
@@ -173,10 +179,6 @@ public class FieldManager : MonoBehaviour {
 
     public GameObject RandomBlock() {
         return blocks[Random.Range(0, blocks.Length)];
-    }
-
-    bool CompVector(Vector2 a, Vector2 b) {
-        return Vector2.SqrMagnitude(a - b) < 0.0001f;
     }
 
     void InitQueue() {

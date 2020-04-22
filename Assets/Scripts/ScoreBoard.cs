@@ -13,7 +13,7 @@ public class ScoreBoard : MonoBehaviour {
     void Awake() {
         levelNum = 1000;
         fm = GameObject.Find("Field").GetComponent<FieldManager>();
-        Transform statsBoard = transform.Find("Board").transform;
+        Transform statsBoard = transform.Find("ScoreBoard").transform;
         scoreText = statsBoard.Find("Score").GetComponent<Text>();
         linesText = statsBoard.Find("Lines").GetComponent<Text>();
         levelText = statsBoard.Find("Level").GetComponent<Text>();
