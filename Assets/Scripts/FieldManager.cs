@@ -64,8 +64,8 @@ public class FieldManager : MonoBehaviour {
 
     // ValidateMove: Checks if a given move hits constraints or other blocks, and if so returns false.
     public bool ValidateMove(Transform block, Vector4 move) {
-        for (int i = 0; i < block.childCount; i++) {
-            Vector3 pos = block.GetChild(i).position;
+        foreach (GameObject child in block) {
+            Vector3 pos = child.transform.position;
             Vector3 rotatedPos = CalcRotation(pos, block, move);
             if (CheckConstraints(pos + (Vector3)move) || CheckConstraints(rotatedPos))
                 return false;
@@ -106,9 +106,9 @@ public class FieldManager : MonoBehaviour {
     // AddToField: Adds block to field array using rounded position as index, as sprite pivot is center.
     public void AddToField(Transform t) {
         board.AddToScore(10);
-        for (int i = 0; i < t.childCount; i++) {
-            Vector2 childPos = t.GetChild(i).transform.position;
-            field[Mathf.FloorToInt(childPos.x - lSide), Mathf.FloorToInt(childPos.y)] = t.GetChild(i).gameObject;
+        foreach (GameObject child in t) {
+            Vector2 childPos = child.transform.position;
+            field[Mathf.FloorToInt(childPos.x - lSide), Mathf.FloorToInt(childPos.y)] = child.gameObject;
         }
         UpdateLines();
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,8 +7,8 @@ public class SideDisplay : MonoBehaviour {
 
     FieldManager fm;
     Transform preview, hold;
-    GameObject heldBlock;
     GameObject[] preQueue;
+    GameObject hBlock;
     bool holding;
 
     private void Awake() {
@@ -26,7 +27,7 @@ public class SideDisplay : MonoBehaviour {
             Destroy(preQueue[i]);
             preQueue[i] = Instantiate(blocks[i]);
             float divLength = pHeight / preQueue.Length;
-            Vector2 pos = new Vector2(preview.position.x, (preview.position.y + (pHeight / 2) - divLength / 2) - i * divLength);
+            Vector2 pos = new Vector2(preview.position.x, preview.position.y + (pHeight / 2) - divLength / 2 - i * divLength);
             MoveBlock(preQueue[i], pos, preview);
         }
     }
@@ -38,11 +39,11 @@ public class SideDisplay : MonoBehaviour {
             MoveBlock(block, hold.position, hold);
             holding = true;
         } else {
-            fm.SpawnBlock(Resources.Load("Prefabs/" + heldBlock.name.Replace("(Clone)", "")) as GameObject);
+            fm.SpawnBlock(Array.Find(fm.blocks, b => b.name == hBlock.name.Replace("(Clone)", "")));
             MoveBlock(block, hold.position, hold);
-            Destroy(heldBlock);
+            Destroy(hBlock);
         }
-        heldBlock = block;
+        hBlock = block;
 
     }
 
@@ -58,14 +59,14 @@ public class SideDisplay : MonoBehaviour {
     // ReturnCenter: Calculates true center of block with respect to all children, instead of pivot.
     Vector3 ReturnCenter(Transform block) {
         Vector3 center = Vector3.zero;
-        for(int i = 0; i < block.childCount; i++) {
-            center += block.GetChild(i).transform.localPosition;
+        foreach (Transform child in block) {
+            center += child.transform.localPosition;
         }
         return Vector3.Scale(center / block.childCount, block.localScale);
     }
 
     public void RemoveHeld() {
-        Destroy(heldBlock);
+        Destroy(hBlock);
         holding = false;
     }
 }
