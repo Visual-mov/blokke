@@ -54,7 +54,7 @@ public class Block : MonoBehaviour {
     // Tick: Checks if block is at bottom of the field and disables if true, otherwise moves the block down.
     IEnumerator Tick() {
         Vector2 move = Vector2.down;
-        while (true) {
+        while (active) {
             yield return new WaitForSeconds(fallTime);
             if (fm.ValidateMove(transform, move))
                 transform.Translate(move, Space.World);
@@ -62,7 +62,6 @@ public class Block : MonoBehaviour {
                 Disable();
                 fm.AddToField(transform);
                 fm.SpawnNextBlock();
-                break;
             }
         }
     }

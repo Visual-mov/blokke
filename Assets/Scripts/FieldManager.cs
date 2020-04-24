@@ -62,10 +62,15 @@ public class FieldManager : MonoBehaviour {
         SpawnNextBlock();
     }
 
+    void Update() {
+        if (!overText.enabled)
+            board.UpdateTime();
+    }
+
     // ValidateMove: Checks if a given move hits constraints or other blocks, and if so returns false.
     public bool ValidateMove(Transform block, Vector4 move) {
-        foreach (GameObject child in block) {
-            Vector3 pos = child.transform.position;
+        foreach (Transform child in block) {
+            Vector3 pos = child.position;
             Vector3 rotatedPos = CalcRotation(pos, block, move);
             if (CheckConstraints(pos + (Vector3)move) || CheckConstraints(rotatedPos))
                 return false;
@@ -106,8 +111,8 @@ public class FieldManager : MonoBehaviour {
     // AddToField: Adds block to field array using rounded position as index, as sprite pivot is center.
     public void AddToField(Transform t) {
         board.AddToScore(10);
-        foreach (GameObject child in t) {
-            Vector2 childPos = child.transform.position;
+        foreach (Transform child in t) {
+            Vector2 childPos = child.position;
             field[Mathf.FloorToInt(childPos.x - lSide), Mathf.FloorToInt(childPos.y)] = child.gameObject;
         }
         UpdateLines();
@@ -125,16 +130,19 @@ public class FieldManager : MonoBehaviour {
     /* Restart & end game functions */
     public void RestartGame() {
         overText.enabled = false;
-        Destroy(curBlock);
-        board.InitStats();
-        InitQueue();
-        display.RemoveHeld();
         for (int y = 0; y < fHeight; y++) RemoveRow(y);
+        board.StopCoroutine("Tick");
+        board.InitStats();
+        display.RemoveHeld();
+        Destroy(curBlock);
+        InitQueue();
         SpawnNextBlock();
+        
     }
 
     public void EndGame() {
         overText.enabled = true;
+        board.StopCoroutine("Tick");
         Destroy(curBlock);
     }
 
