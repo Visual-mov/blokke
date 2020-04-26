@@ -17,7 +17,7 @@ public class Block : MonoBehaviour {
 
     void Start() {
         if (fm.ValidateMove(transform, Vector3.zero))
-            StartCoroutine("Tick");
+            StartCoroutine("MoveDown");
     }
 
     void Update() {
@@ -51,8 +51,8 @@ public class Block : MonoBehaviour {
         lastInput = input;
     }
 
-    // Tick: Checks if block is at bottom of the field and disables if true, otherwise moves the block down.
-    IEnumerator Tick() {
+    // MoveDown: Checks if block is at bottom of the field and disables if true, otherwise moves the block down.
+    IEnumerator MoveDown() {
         Vector2 move = Vector2.down;
         while (active) {
             yield return new WaitForSeconds(fallTime);
@@ -68,6 +68,6 @@ public class Block : MonoBehaviour {
 
     public void Disable() {
         active = false;
-        StopCoroutine("Tick");
+        StopCoroutine("MoveDown");
     }
 }
