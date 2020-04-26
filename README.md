@@ -1,2 +1,25 @@
 # Blokke
-Blokke is a open source Tetris clone made in Unity, nothing more than that.
+<img src="game.png" alt="screenshot" width="600"/>
+
+Blokke is a open source Tetris clone with a green & blue aesthetic. I built Blokke in Unity as a way to get familiar with the platform.
+
+## Running
+Clone repo:
+`~$ git clone https://github.com/Visual-mov/blokke`
+
+Navigate to `blokke/Builds`, and select your platform. Currently only Windows is supported
+
+## Controls
+The controls for Blokke are also included in the "About" menu. Blokke supports keyboard or control pad for input.
+```
+Move block left              | A or left on d-pad
+Move block right             | D or right on d-pad
+Move block down              | S or down on d-pad
+Move block down continuously | W or up on d-pad
+Rotate block                 | Space or button 3
+Hold block                   | Q or button 2
+```
+
+## Screenshots
+<img src="image2.png" alt="screenshot" width="600"/>
+<img src="image1.png" alt="screenshot" width="600"/>
