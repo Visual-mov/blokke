@@ -121,8 +121,12 @@ public class FieldManager : MonoBehaviour {
     // SpawnNextBlock: Instantiates next block, and adds a random block to the end of the queue.
     public void SpawnNextBlock() {
         GameObject block = blockQueue.Dequeue();
+        if (!ValidateMove(block.transform, Vector3.zero)) {
+            EndGame();
+            return;
+        }
         block.GetComponent<Block>().fallTime = fallTime;
-        SpawnBlock(block);
+        curBlock = Instantiate(block);
         blockQueue.Enqueue(RandomBlock());
         display.UpdatePreview();
     }
@@ -143,7 +147,6 @@ public class FieldManager : MonoBehaviour {
     public void EndGame() {
         overText.enabled = true;
         board.StopCoroutine("Tick");
-        Destroy(curBlock);
     }
 
     /* Helper Functions */
@@ -175,14 +178,6 @@ public class FieldManager : MonoBehaviour {
         float xp = pos.x * Mathf.Cos(a) - pos.y * Mathf.Sin(a);
         float yp = pos.x * Mathf.Sin(a) + pos.y * Mathf.Cos(a);
         return block.TransformPoint(new Vector3(xp, yp, 0)) + (Vector3)move;
-    }
-
-    // SpawnBlock: Instantiates given block with respect to field position.
-    public void SpawnBlock(GameObject block) {
-        curBlock = Instantiate(block, block.transform.position + new Vector3(lSide, 0, 0), Quaternion.identity);
-        if (!ValidateMove(curBlock.transform, Vector3.zero)) {
-            EndGame();
-        }
     }
 
     public GameObject RandomBlock() {

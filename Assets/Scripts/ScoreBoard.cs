@@ -43,13 +43,11 @@ public class ScoreBoard : MonoBehaviour {
         while (true) {
             yield return new WaitForSeconds(1);
             time[0]++;
-            if (time[0] == 60) {
-                time[0] = 0;
-                time[1]++;
-            }
-            if (time[1] == 60) {
-                time[1] = 0;
-                time[2]++;
+            for(int i = 0; i < time.Length - 1; i++) {
+                if(time[i] == 60) {
+                    time[i] = 0;
+                    time[i + 1]++;
+                }
             }
         }
     }

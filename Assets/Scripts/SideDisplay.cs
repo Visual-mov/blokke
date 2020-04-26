@@ -39,12 +39,11 @@ public class SideDisplay : MonoBehaviour {
             MoveBlock(block, hold.position, hold);
             holding = true;
         } else {
-            fm.SpawnBlock(Array.Find(fm.blocks, b => b.name == hBlock.name.Replace("(Clone)", "")));
+            fm.curBlock = Instantiate(Array.Find(fm.blocks, b => b.name == hBlock.name.Replace("(Clone)", "")));
             MoveBlock(block, hold.position, hold);
             Destroy(hBlock);
         }
         hBlock = block;
-
     }
 
     // MoveBlock: Disables and displays block at given position.
