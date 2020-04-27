@@ -11,7 +11,6 @@ public class FieldManager : MonoBehaviour {
     public float fallTime;
     public int queueLength;
     int fWidth, fHeight;
-    float lSide, rSide;
     GameObject[,] field;
     Text overText;
 
@@ -21,10 +20,7 @@ public class FieldManager : MonoBehaviour {
     void Awake() {
         Vector3 size = transform.TransformVector(transform.GetComponent<BoxCollider2D>().size);
         fWidth = (int)size.x;
-        fHeight = (int)size.y;
-
-        lSide = transform.position.x - fWidth / 2;
-        rSide = transform.position.x + fWidth / 2;
+        fHeight = (int)size.y;;
         fallTime = 1.0f;
         queueLength = 3;
         
@@ -47,16 +43,16 @@ public class FieldManager : MonoBehaviour {
     }
 
     // Field debug
-    //private void OnDrawGizmos() {
-    //    if (Application.isPlaying) {
-    //        for (int i = 0; i < fHeight; i++) {
-    //            for (int j = 0; j < fWidth; j++) {
-    //                if (Field[j, i] != null)
-    //                    Gizmos.DrawSphere(Field[j, i].transform.position, 0.3f);
-    //            }
-    //        }
-    //    }
-    //}
+    private void OnDrawGizmos() {
+        if (Application.isPlaying) {
+            for (int i = 0; i < fHeight; i++) {
+                for (int j = 0; j < fWidth; j++) {
+                    if (field[j, i] != null)
+                        Gizmos.DrawSphere(field[j, i].transform.position, 0.3f);
+                }
+            }
+        }
+    }
 
     void Start() {
         SpawnNextBlock();
@@ -112,8 +108,7 @@ public class FieldManager : MonoBehaviour {
     public void AddToField(Transform t) {
         board.AddToScore(10);
         foreach (Transform child in t) {
-            Vector2 childPos = child.position;
-            field[Mathf.FloorToInt(childPos.x - lSide), Mathf.FloorToInt(childPos.y)] = child.gameObject;
+            field[Mathf.FloorToInt(child.position.x), Mathf.FloorToInt(child.position.y)] = child.gameObject;
         }
         UpdateLines();
     }
@@ -168,7 +163,7 @@ public class FieldManager : MonoBehaviour {
 
     // CheckConstraints: Returns true if pos is within the field.
     public bool CheckConstraints(Vector3 pos) {
-        return (pos.x >= rSide || pos.x <= lSide || pos.y <= transform.position.y - fHeight / 2) ? true : false;
+        return (pos.x >= fWidth || pos.x <= 0 || pos.y <= transform.position.y - fHeight / 2) ? true : false;
     }
 
     // CalcRotation: Calculates rotated vector with a counter-clockwise rotation of degree degrees
