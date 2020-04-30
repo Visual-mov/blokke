@@ -43,16 +43,16 @@ public class FieldManager : MonoBehaviour {
     }
 
     // Field debug
-    private void OnDrawGizmos() {
-        if (Application.isPlaying) {
-            for (int i = 0; i < fHeight; i++) {
-                for (int j = 0; j < fWidth; j++) {
-                    if (field[j, i] != null)
-                        Gizmos.DrawSphere(field[j, i].transform.position, 0.3f);
-                }
-            }
-        }
-    }
+    //private void OnDrawGizmos() {
+    //    if (Application.isPlaying) {
+    //        for (int i = 0; i < fHeight; i++) {
+    //            for (int j = 0; j < fWidth; j++) {
+    //                if (field[j, i] != null)
+    //                    Gizmos.DrawSphere(field[j, i].transform.position, 0.3f);
+    //            }
+    //        }
+    //    }
+    //}
 
     void Start() {
         SpawnNextBlock();
