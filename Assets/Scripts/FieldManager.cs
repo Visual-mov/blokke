@@ -68,15 +68,14 @@ public class FieldManager : MonoBehaviour {
         foreach (Transform child in block) {
             Vector3 pos = child.position;
             Vector3 rotatedPos = CalcRotation(pos, block, move);
-            if (CheckConstraints(pos + (Vector3)move) || CheckConstraints(rotatedPos))
-                return false;
+            if (CheckConstraints(pos + (Vector3)move) || CheckConstraints(rotatedPos)) return false;
+
             for (int y = 0; y < fHeight; y++) {
                 for (int x = 0; x < fWidth; x++) {
-                    if (field[x, y] == null)
-                        continue;
-                    Transform FBlock = field[x, y].transform;
-                    if (FBlock.position == pos + (Vector3)move || FBlock.position == rotatedPos)
-                        return false;
+                    if (field[x, y] != null) {
+                        Vector3 blockPos = field[x, y].transform.position;
+                        if (blockPos == pos + (Vector3)move || blockPos == rotatedPos) return false;
+                    }
                 }
             }
         }
@@ -92,10 +91,8 @@ public class FieldManager : MonoBehaviour {
                 RemoveRow(y);
                 for (int i = y; i < fHeight; i++) {
                     for (int j = 0; j < fWidth; j++) {
-                        if (i + 1 >= fHeight)
-                            RemoveRow(i);
-                        else {
-                            if (field[j, i] != null) field[j, i].transform.Translate(Vector2.down,Space.World);
+                        if (i != fHeight - 1) {
+                            if (field[j, i] != null) field[j, i].transform.Translate(Vector2.down, Space.World);
                             field[j, i] = field[j, i + 1];
                         }
                     }
