@@ -43,16 +43,16 @@ public class FieldManager : MonoBehaviour {
     }
 
     // Field debug
-    //private void OnDrawGizmos() {
-    //    if (Application.isPlaying) {
-    //        for (int i = 0; i < fHeight; i++) {
-    //            for (int j = 0; j < fWidth; j++) {
-    //                if (field[j, i] != null)
-    //                    Gizmos.DrawSphere(field[j, i].transform.position, 0.3f);
-    //            }
-    //        }
-    //    }
-    //}
+    private void OnDrawGizmos() {
+        if (Application.isPlaying) {
+            for (int i = 0; i < fHeight; i++) {
+                for (int j = 0; j < fWidth; j++) {
+                    if (field[j, i] != null)
+                        Gizmos.DrawSphere(field[j, i].transform.position, 0.3f);
+                }
+            }
+        }
+    }
 
     void Start() {
         SpawnNextBlock();
@@ -63,18 +63,20 @@ public class FieldManager : MonoBehaviour {
             board.UpdateTime();
     }
 
-    // ValidateMove: Checks if a given move hits constraints or other blocks, and if so returns false.
+    /* ValidateMove: Checks if a given move hits constraints or other blocks, and if so returns false. */
     public bool ValidateMove(Transform block, Vector4 move) {
         foreach (Transform child in block) {
             Vector3 pos = child.position;
             Vector3 rotatedPos = CalcRotation(pos, block, move);
-            if (CheckConstraints(pos + (Vector3)move) || CheckConstraints(rotatedPos)) return false;
+            if (CheckConstraints(pos + (Vector3)move) || CheckConstraints(rotatedPos))
+                return false;
 
             for (int y = 0; y < fHeight; y++) {
                 for (int x = 0; x < fWidth; x++) {
                     if (field[x, y] != null) {
                         Vector3 blockPos = field[x, y].transform.position;
-                        if (blockPos == pos + (Vector3)move || blockPos == rotatedPos) return false;
+                        if (blockPos == pos + (Vector3)move || blockPos == rotatedPos)
+                            return false;
                     }
                 }
             }
@@ -82,7 +84,7 @@ public class FieldManager : MonoBehaviour {
         return true;
     }
 
-    // UpdateLines: Loops through Field and deletes full lines while shifting all rows above.
+    /* UpdateLines: Loops through Field and deletes full lines while shifting all rows above. */
     public void UpdateLines() {
         for (int y = 0; y < fHeight; y++) {
             while (RowFilled(y)) {
@@ -101,7 +103,7 @@ public class FieldManager : MonoBehaviour {
         }
     }
 
-    // AddToField: Adds block to field array using rounded position as index, as sprite pivot is center.
+    /* AddToField: Adds block to field array using rounded position as index, as sprite pivot is center. */
     public void AddToField(Transform t) {
         board.AddToScore(10);
         foreach (Transform child in t) {
@@ -110,7 +112,7 @@ public class FieldManager : MonoBehaviour {
         UpdateLines();
     }
 
-    // SpawnNextBlock: Instantiates next block, and adds a random block to the end of the queue.
+    /* SpawnNextBlock: Instantiates next block, and adds a random block to the end of the queue. */
     public void SpawnNextBlock() {
         GameObject block = blockQueue.Dequeue();
         if (!ValidateMove(block.transform, Vector3.zero)) {
@@ -142,7 +144,8 @@ public class FieldManager : MonoBehaviour {
     }
 
     /* Helper Functions */
-    // RowFilled: Returns true if given row is full.
+
+    /* RowFilled: Returns true if given row is full. */
     bool RowFilled(int row) {
         for (int x = 0; x < fWidth; x++) {
             if (field[x, row] == null) return false;
@@ -150,7 +153,7 @@ public class FieldManager : MonoBehaviour {
         return true;
     }
 
-    // RemoveRow: Removes given row from field array.
+    /* RemoveRow: Removes given row from field array. */
     void RemoveRow(int row) {
         for (int x = 0; x < fWidth; x++) { 
             Destroy(field[x, row]);
@@ -158,12 +161,12 @@ public class FieldManager : MonoBehaviour {
         }
     }
 
-    // CheckConstraints: Returns true if pos is within the field.
+    /* CheckConstraints: Returns true if pos is within the field. */
     public bool CheckConstraints(Vector3 pos) {
         return (pos.x >= fWidth || pos.x <= 0 || pos.y <= transform.position.y - fHeight / 2) ? true : false;
     }
 
-    // CalcRotation: Calculates rotated vector with a counter-clockwise rotation of degree degrees
+    /* CalcRotation: Calculates rotated vector with a counter-clockwise rotation in move. */
     Vector3 CalcRotation(Vector2 pos, Transform block, Vector4 move) {
         pos = block.InverseTransformPoint(pos);
         float a = move.w * Mathf.PI / 180;
