@@ -6,21 +6,21 @@ public class Block : MonoBehaviour {
 
     public bool active;
     public float fallTime;
-    FieldManager fm;
-    Vector2 lastInput;
+    private FieldManager fm;
+    private Vector2 lastInput;
 
-    void Awake() {
+    private void Awake() {
         fm = GameObject.Find("Field").GetComponent<FieldManager>();
         active = true;
         lastInput = Vector2.zero;
     }
 
-    void Start() {
+    private void Start() {
         if (fm.ValidateMove(transform, Vector3.zero))
             StartCoroutine("MoveDown");
     }
 
-    void Update() {
+    private void Update() {
         if (active)
             CheckInput();
         if (transform.childCount == 0)
@@ -28,7 +28,7 @@ public class Block : MonoBehaviour {
     }
 
     // CheckInput: Listens for user input, and executes according action(s).
-    void CheckInput() {
+    private void CheckInput() {
         Vector4 move = new Vector4();
         Vector2 input = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
@@ -52,7 +52,7 @@ public class Block : MonoBehaviour {
     }
 
     // MoveDown: Checks if block is at bottom of the field and disables if true, otherwise moves the block down.
-    IEnumerator MoveDown() {
+    private IEnumerator MoveDown() {
         Vector2 move = Vector2.down;
         while (active) {
             yield return new WaitForSeconds(fallTime);

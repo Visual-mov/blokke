@@ -6,13 +6,13 @@ using UnityEngine.UI;
 
 public class ScoreBoard : MonoBehaviour {
 
-    int[] time;
-    FieldManager fm;
-    Text scoreText, linesText, levelText, timeText;
-    int score, lines, level;
-    int nextUp, levelNum;
+    private int[] time;
+    private FieldManager fm;
+    private Text scoreText, linesText, levelText, timeText;
+    private int score, lines, level;
+    private int nextUp, levelNum;
 
-    void Awake() {
+    private void Awake() {
         levelNum = 1000;
         fm = GameObject.Find("Field").GetComponent<FieldManager>();
         Transform statsBoard = transform.Find("ScoreBoard").transform;

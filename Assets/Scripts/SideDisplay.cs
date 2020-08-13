@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class SideDisplay : MonoBehaviour {
 
-    FieldManager fm;
-    Transform preview, hold;
-    GameObject[] preQueue;
-    GameObject hBlock;
-    bool holding;
+    private FieldManager fm;
+    private Transform preview, hold;
+    private GameObject[] preQueue;
+    private GameObject hBlock;
+    private bool holding;
 
     private void Awake() {
         fm = GameObject.Find("Field").GetComponent<FieldManager>();
@@ -47,7 +47,7 @@ public class SideDisplay : MonoBehaviour {
     }
 
     /* MoveBlock: Disables and displays block at given position. */
-    void MoveBlock(GameObject g, Vector3 pos, Transform t) {
+    private void MoveBlock(GameObject g, Vector3 pos, Transform t) {
         g.GetComponent<Block>().Disable();
         g.transform.rotation = Quaternion.identity;
         g.transform.localScale = new Vector2(0.55f,0.55f);
@@ -56,7 +56,7 @@ public class SideDisplay : MonoBehaviour {
     }
 
     /* ReturnCenter: Calculates true center of block with respect to all children, instead of pivot. */
-    Vector3 ReturnCenter(Transform block) {
+    private Vector3 ReturnCenter(Transform block) {
         Vector3 center = Vector3.zero;
         foreach (Transform child in block) {
             center += child.transform.localPosition;

@@ -10,14 +10,14 @@ public class FieldManager : MonoBehaviour {
     public Queue<GameObject> blockQueue;
     public float fallTime;
     public int queueLength;
-    int fWidth, fHeight;
-    GameObject[,] field;
-    Text overText;
+    private int fWidth, fHeight;
+    private GameObject[,] field;
+    private Text overText;
 
     public SideDisplay display;
-    ScoreBoard board;
+    private ScoreBoard board;
 
-    void Awake() {
+    private void Awake() {
         Vector3 size = transform.TransformVector(transform.GetComponent<BoxCollider2D>().size);
         fWidth = (int)size.x;
         fHeight = (int)size.y;;
@@ -43,22 +43,22 @@ public class FieldManager : MonoBehaviour {
     }
 
     // Field debug
-    private void OnDrawGizmos() {
-        if (Application.isPlaying) {
-            for (int i = 0; i < fHeight; i++) {
-                for (int j = 0; j < fWidth; j++) {
-                    if (field[j, i] != null)
-                        Gizmos.DrawSphere(field[j, i].transform.position, 0.3f);
-                }
-            }
-        }
-    }
+    //private void OnDrawGizmos() {
+    //    if (Application.isPlaying) {
+    //        for (int i = 0; i < fHeight; i++) {
+    //            for (int j = 0; j < fWidth; j++) {
+    //                if (field[j, i] != null)
+    //                    Gizmos.DrawSphere(field[j, i].transform.position, 0.3f);
+    //            }
+    //        }
+    //    }
+    //}
 
-    void Start() {
+    private void Start() {
         SpawnNextBlock();
     }
 
-    void Update() {
+    private void Update() {
         if (!overText.enabled)
             board.UpdateTime();
     }
@@ -144,9 +144,8 @@ public class FieldManager : MonoBehaviour {
     }
 
     /* Helper Functions */
-
     /* RowFilled: Returns true if given row is full. */
-    bool RowFilled(int row) {
+    private bool RowFilled(int row) {
         for (int x = 0; x < fWidth; x++) {
             if (field[x, row] == null) return false;
         }
@@ -154,7 +153,7 @@ public class FieldManager : MonoBehaviour {
     }
 
     /* RemoveRow: Removes given row from field array. */
-    void RemoveRow(int row) {
+    private void RemoveRow(int row) {
         for (int x = 0; x < fWidth; x++) { 
             Destroy(field[x, row]);
             field[x, row] = null;
@@ -167,7 +166,7 @@ public class FieldManager : MonoBehaviour {
     }
 
     /* CalcRotation: Calculates rotated vector with a counter-clockwise rotation in move. */
-    Vector3 CalcRotation(Vector2 pos, Transform block, Vector4 move) {
+    private Vector3 CalcRotation(Vector2 pos, Transform block, Vector4 move) {
         pos = block.InverseTransformPoint(pos);
         float a = move.w * Mathf.PI / 180;
         float xp = pos.x * Mathf.Cos(a) - pos.y * Mathf.Sin(a);
@@ -179,7 +178,7 @@ public class FieldManager : MonoBehaviour {
         return blocks[Random.Range(0, blocks.Length)];
     }
 
-    void InitQueue() {
+    private void InitQueue() {
         blockQueue = new Queue<GameObject>();
         for (int i = 0; i < queueLength; i++) {
             blockQueue.Enqueue(RandomBlock());
