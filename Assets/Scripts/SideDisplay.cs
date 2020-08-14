@@ -32,7 +32,7 @@ public class SideDisplay : MonoBehaviour {
         }
     }
 
-    /* HoldBlock: Puts given block in holding position and spawn previously held block if it exists. If not, spawns next block in queue. */
+    /* HoldBlock: Holds given block and spawns held block if it exists. If it doesn't, spawn next block in queue. */
     public void HoldBlock(GameObject block) {
         if (!holding) {
             fm.SpawnNextBlock();
@@ -46,7 +46,7 @@ public class SideDisplay : MonoBehaviour {
         hBlock = block;
     }
 
-    /* MoveBlock: Disables and displays block at given position. */
+    /* MoveBlock: Prepares the block for side display and moves it. */
     private void MoveBlock(GameObject g, Vector3 pos, Transform t) {
         g.GetComponent<Block>().Disable();
         g.transform.rotation = Quaternion.identity;

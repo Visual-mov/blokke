@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public class ScoreBoard : MonoBehaviour {
 
+    public Text scoreText, linesText, levelText, timeText;
     private int[] time;
     private FieldManager fm;
-    public Text scoreText, linesText, levelText, timeText;
     private int score, lines, level;
     private int nextUp, levelNum;
 
@@ -36,10 +36,10 @@ public class ScoreBoard : MonoBehaviour {
     // IncrementLevel: Increases level and difficulty (speed of block's decent)
     public void IncrementLevel() {
         nextUp += levelNum;
-        if (fm.fallTime >= 0.2) {
+        if (fm.fallSpeed >= 0.2) {
             level += 1;
             levelText.text = "Level:" + level;
-            fm.fallTime -= 0.05f;
+            fm.fallSpeed -= 0.05f;
         }
     }
 

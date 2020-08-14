@@ -4,52 +4,53 @@ using UnityEngine;
 
 public class Block : MonoBehaviour {
 
+    public float fastSpeed = 0.02f;
     public bool active;
-    public float fallTime;
     private FieldManager fm;
-    private Vector2 lastInput;
+    private Vector2 lastPad;
     private Coroutine moveDown, holdDown;
 
     private void Awake() {
         fm = GameObject.Find("Field").GetComponent<FieldManager>();
         active = true;
-        lastInput = Vector2.zero;
+        lastPad = Vector2.zero;
         holdDown = null;
         moveDown = null;
     }
 
     private void Start() {
         if (fm.ValidateMove(transform, Vector3.zero))
-            moveDown = StartCoroutine(MoveDown(fallTime));
+            moveDown = StartCoroutine(MoveDown(fm.fallSpeed));
     }
 
     private void Update() {
         if (active)
             CheckInput();
+
         // Destroy block parent gameobject if all children have been cleared.
         if (transform.childCount == 0)
             Destroy(transform.gameObject);
     }
 
-    // CheckInput: Checks for keyboard or controller input, and executes according action(s).
+    /* CheckInput: Checks for keyboard or controller input and applies move. */
     private void CheckInput() {
         Vector4 move = new Vector4();
 
         // Controller input
         if(Input.GetJoystickNames().Length != 0) {
             Vector2 padInput = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-            if (padInput.x != lastInput.x)
+            if (padInput.x != lastPad.x)
                 move.x = padInput.x;
 
-            if (padInput.y != lastInput.y) {
+            if (padInput.y != lastPad.y) {
                 if (padInput.y == 1)
                     move.y = -1.0f;
                 else if (padInput.y == -1)
-                    holdDown = StartCoroutine(FastMoveDown());
+                    holdDown = StartCoroutine(MoveDown(fastSpeed));
                 else if (padInput.y == 0 && holdDown != null)
                     StopCoroutine(holdDown);
             }
-            lastInput = padInput;
+            lastPad = padInput;
         }
 
         // Keyboard input
@@ -63,7 +64,7 @@ public class Block : MonoBehaviour {
             fm.display.HoldBlock(transform.gameObject);
 
         if (Input.GetKeyDown(KeyCode.W))
-            holdDown = StartCoroutine(FastMoveDown());
+            holdDown = StartCoroutine(MoveDown(fastSpeed));
         else if (Input.GetKeyUp(KeyCode.W) && holdDown != null)
             StopCoroutine(holdDown);
 
@@ -74,22 +75,18 @@ public class Block : MonoBehaviour {
         }
     }
 
-    // MoveDown: Checks if block is at bottom of the field and disables if true, otherwise moves the block down.
-    private IEnumerator MoveDown(float fallTime) {
-        Vector2 move = Vector2.down;
+    /* MoveDown: Checks if block is at bottom of the field and disables if true, otherwise moves the block down. */
+    private IEnumerator MoveDown(float speed) {
         while (active) {
-            yield return new WaitForSeconds(fallTime);
-            if (fm.ValidateMove(transform, move)) {
-                transform.Translate(move, Space.World);
+            yield return new WaitForSeconds(speed);
+            if (fm.ValidateMove(transform, Vector2.down)) {
+                transform.Translate(Vector2.down, Space.World);
             } else if (active) {
                 Disable();
                 fm.AddToField(transform);
                 fm.SpawnNextBlock();
             }
         }
-    }
-    private IEnumerator FastMoveDown() {
-        yield return MoveDown(0.02f);
     }
 
     public void Disable() {

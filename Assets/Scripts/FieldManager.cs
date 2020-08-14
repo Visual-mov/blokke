@@ -8,7 +8,7 @@ public class FieldManager : MonoBehaviour {
     public GameObject[] blocks;
     public GameObject curBlock;
     public Queue<GameObject> blockQueue;
-    public float fallTime;
+    public float fallSpeed;
     public int queueLength;
     private int fWidth, fHeight;
     private GameObject[,] field;
@@ -21,7 +21,7 @@ public class FieldManager : MonoBehaviour {
         Vector3 size = transform.TransformVector(transform.GetComponent<BoxCollider2D>().size);
         fWidth = (int)size.x;
         fHeight = (int)size.y;;
-        fallTime = 1.0f;
+        fallSpeed = 1.0f;
         queueLength = 3;
         
         display = GameObject.Find("SideDisplay").GetComponent<SideDisplay>();
@@ -119,7 +119,6 @@ public class FieldManager : MonoBehaviour {
             EndGame();
             return;
         }
-        block.GetComponent<Block>().fallTime = fallTime;
         curBlock = Instantiate(block);
         blockQueue.Enqueue(RandomBlock());
         display.UpdatePreview();
@@ -130,8 +129,8 @@ public class FieldManager : MonoBehaviour {
         for (int y = 0; y < fHeight; y++)
             RemoveRow(y);
         overText.enabled = false;
-        board.StopCoroutine("Tick");
         board.InitStats();
+        board.StopCoroutine("Tick");
         display.RemoveHeld();
         Destroy(curBlock);
         InitQueue();
@@ -139,15 +138,16 @@ public class FieldManager : MonoBehaviour {
         
     }
     public void EndGame() {
-        overText.enabled = true;
         board.StopCoroutine("Tick");
+        overText.enabled = true;
     }
 
     /* Helper Functions */
     /* RowFilled: Returns true if given row is full. */
     private bool RowFilled(int row) {
         for (int x = 0; x < fWidth; x++) {
-            if (field[x, row] == null) return false;
+            if (field[x, row] == null)
+                return false;
         }
         return true;
     }
@@ -162,7 +162,7 @@ public class FieldManager : MonoBehaviour {
 
     /* CheckConstraints: Returns true if pos is within the field. */
     public bool CheckConstraints(Vector3 pos) {
-        return (pos.x >= fWidth || pos.x <= 0 || pos.y <= transform.position.y - fHeight / 2) ? true : false;
+        return pos.x >= fWidth || pos.x <= 0 || pos.y <= transform.position.y - fHeight / 2;
     }
 
     /* CalcRotation: Calculates a rotated position given counter-clockwise rotation value in move. */
