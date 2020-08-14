@@ -249,7 +249,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -130, y: 0}
-  m_SizeDelta: {x: 200, y: 125}
+  m_SizeDelta: {x: 250, y: 125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &256269031
 MonoBehaviour:
@@ -284,16 +284,16 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'W / Up d-pad
+  m_Text: 'W / Up d-pad (hold)
 
     S / Down d-pad
 
     A / Left d-pad
 
-    D / Right d-pad
+    D / Right
+    d-pad
 
-    Q
-    / Button 2
+    Q / Button 2
 
     Space / Button 3'
 --- !u!222 &256269032

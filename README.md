@@ -14,12 +14,12 @@ Navigate to `blokke/Builds`, and select the file for your platform. Currently on
 ## Controls
 The controls for Blokke are also included in the "About" menu. Blokke supports keyboard or control pad for input.
 ```
-Move block left              | A or left on d-pad
-Move block right             | D or right on d-pad
-Move block down              | S or down on d-pad
-Move block down continuously | W or up on d-pad
-Rotate block                 | Space or button 3
-Hold block                   | Q or button 2
+Move block left        | A or left on d-pad
+Move block right       | D or right on d-pad
+Move block down        | S or down on d-pad
+Move block down faster | W or up on d-pad (hold)
+Rotate block           | Space or button 3
+Hold block             | Q or button 2
 ```
 
 ## Screenshots
