@@ -103,7 +103,7 @@ public class FieldManager : MonoBehaviour {
         }
     }
 
-    /* AddToField: Adds block to field array using rounded position as index, as sprite pivot is center. */
+    /* AddToField: Adds block to field array using floored position as index, as sprite pivot is center. */
     public void AddToField(Transform t) {
         board.AddToScore(10);
         foreach (Transform child in t) {
