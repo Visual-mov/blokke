@@ -18,7 +18,7 @@ public class SideDisplay : MonoBehaviour {
         holding = false;
         preQueue = new GameObject[fm.queueLength];
     }
-
+    
     /* UpdatePreview: Updates blocks being displayed in preview to show block queue. */
     public void UpdatePreview() {
         GameObject[] blocks = fm.blockQueue.ToArray();

@@ -43,16 +43,16 @@ public class FieldManager : MonoBehaviour {
     }
 
     // Field debug
-    //private void OnDrawGizmos() {
-    //    if (Application.isPlaying) {
-    //        for (int i = 0; i < fHeight; i++) {
-    //            for (int j = 0; j < fWidth; j++) {
-    //                if (field[j, i] != null)
-    //                    Gizmos.DrawSphere(field[j, i].transform.position, 0.3f);
-    //            }
-    //        }
-    //    }
-    //}
+    private void OnDrawGizmos() {
+        if (Application.isPlaying) {
+            for (int i = 0; i < fHeight; i++) {
+                for (int j = 0; j < fWidth; j++) {
+                    if (field[j, i] != null)
+                        Gizmos.DrawSphere(field[j, i].transform.position, 0.3f);
+                }
+            }
+        }
+    }
 
     private void Start() {
         SpawnNextBlock();
@@ -127,8 +127,9 @@ public class FieldManager : MonoBehaviour {
 
     /* Restart & end game functions */
     public void RestartGame() {
+        for (int y = 0; y < fHeight; y++)
+            RemoveRow(y);
         overText.enabled = false;
-        for (int y = 0; y < fHeight; y++) RemoveRow(y);
         board.StopCoroutine("Tick");
         board.InitStats();
         display.RemoveHeld();
@@ -137,7 +138,6 @@ public class FieldManager : MonoBehaviour {
         SpawnNextBlock();
         
     }
-
     public void EndGame() {
         overText.enabled = true;
         board.StopCoroutine("Tick");
@@ -165,7 +165,7 @@ public class FieldManager : MonoBehaviour {
         return (pos.x >= fWidth || pos.x <= 0 || pos.y <= transform.position.y - fHeight / 2) ? true : false;
     }
 
-    /* CalcRotation: Calculates rotated vector with a counter-clockwise rotation in move. */
+    /* CalcRotation: Calculates a rotated position given counter-clockwise rotation value in move. */
     private Vector3 CalcRotation(Vector2 pos, Transform block, Vector4 move) {
         pos = block.InverseTransformPoint(pos);
         float a = move.w * Mathf.PI / 180;

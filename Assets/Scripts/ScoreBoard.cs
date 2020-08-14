@@ -8,18 +8,13 @@ public class ScoreBoard : MonoBehaviour {
 
     private int[] time;
     private FieldManager fm;
-    private Text scoreText, linesText, levelText, timeText;
+    public Text scoreText, linesText, levelText, timeText;
     private int score, lines, level;
     private int nextUp, levelNum;
 
     private void Awake() {
         levelNum = 1000;
         fm = GameObject.Find("Field").GetComponent<FieldManager>();
-        Transform statsBoard = transform.Find("ScoreBoard").transform;
-        scoreText = statsBoard.Find("Score").GetComponent<Text>();
-        linesText = statsBoard.Find("Lines").GetComponent<Text>();
-        levelText = statsBoard.Find("Level").GetComponent<Text>();
-        timeText = statsBoard.Find("Time").GetComponent<Text>();
         time = new int[3];
         InitStats();
     }
@@ -55,11 +50,11 @@ public class ScoreBoard : MonoBehaviour {
         linesText.text = "Lines:0";
         levelText.text = "Level:1";
         timeText.text = "0:00:00";
-        nextUp = levelNum;
-        time = new int[3];
         score = 0;
         lines = 0;
         level = 1;
+        nextUp = levelNum;
+        time = new int[3];
     }
 
     public void AddToScore(int n) {

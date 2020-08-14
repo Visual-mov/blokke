@@ -56,12 +56,12 @@ public class Block : MonoBehaviour {
         move.x += Input.GetKeyDown(KeyCode.A) ? -1 : 0;
         move.x += Input.GetKeyDown(KeyCode.D) ? 1 : 0;
         move.w += Input.GetButtonDown("Rotate") ? 90 : 0;
+
         if (Input.GetKeyDown(KeyCode.S))
             move.y = -1.0f;
         if (Input.GetButtonDown("Hold"))
             fm.display.HoldBlock(transform.gameObject);
 
-        // Handle fast block moving
         if (Input.GetKeyDown(KeyCode.W))
             holdDown = StartCoroutine(FastMoveDown());
         else if (Input.GetKeyUp(KeyCode.W) && holdDown != null)
